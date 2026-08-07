@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
-    if(!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
             success: false,
             message: "Thiếu token xác thực!"
@@ -18,7 +18,7 @@ const authenticateToken = async (req, res, next) => {
         req.user = decodedToken; //cache user cho request khi qua trạm này
 
         return next();
-    }catch(error) {
+    } catch (error) {
         return res.status(401).json({
             success: false,
             message: "Token không hợp lệ hoặc đã hết hạn!"
@@ -27,11 +27,11 @@ const authenticateToken = async (req, res, next) => {
 }
 
 //Kiểm tra role admin
-const requireAdmin = async(req, res, next) => {
-    try{
-        const uid = req.user? req.user.uid : null;
+const requireAdmin = async (req, res, next) => {
+    try {
+        const uid = req.user ? req.user.uid : null;
 
-        if(!uid) {
+        if (!uid) {
             return res.status(401).json({
                 success: false,
                 message: "Chưa xác thực!"
@@ -40,15 +40,15 @@ const requireAdmin = async(req, res, next) => {
 
         const userDoc = await admin.firestore().collection("users").doc(uid).get();
 
-        if(!userDoc.exists || userDoc.data().role != "admin") {
+        if (!userDoc.exists || userDoc.data().role != "admin") {
             return res.status(403).json({
                 success: false,
                 message: "Bạn không có quyền truy cập vào đây!"
             });
-        } 
+        }
 
         return next();
-    }catch(error) {
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Hệ thống xảy ra lỗi!"

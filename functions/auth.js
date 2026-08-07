@@ -1,30 +1,52 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
+const { FieldValue } = require("firebase-admin/firestore");
 
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
-
-async function verifyFirebaseToken(req, res) {
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
-
-  if (!token) {
-    res.status(401).json({error: "Missing bearer token"});
-    return null;
-  }
-
+const login = async (req, res) => {
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken;
-    return decodedToken;
+    const user = req.user;
+
+    const uid = user.uid;
+    const email = user.email || "";
+    const name = user.name || "";
+    const avatar = user.picture || "";
+
+    const userRef = admin.firestore().collection("users").doc(uid);
+    const userDoc = await userRef.get();
+
+    let userData;
+
+    if (!userDoc.exists) {
+      userData = {
+        uid: uid,
+        email: email,
+        displayName: name,
+        avatar: avatar,
+        role: "user",
+        createAt: FieldValue.serverTimestamp(),
+        updateAt: FieldValue.serverTimestamp(),
+      };
+
+      await userRef.set(userData);
+    }else {
+      userData = userDoc.data();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Đăng nhập thành công!",
+      userData: userData
+    });
+
   } catch (error) {
-    logger.error("Token verification failed", error);
-    res.status(401).json({error: "Unauthorized"});
-    return null;
+     return res.status(500).json({
+      success: false,
+      message: "Lỗi hệ thống: " + error.message,
+      userData: null
+    });
   }
 }
 
 module.exports = {
-  verifyFirebaseToken,
+  login
 };
