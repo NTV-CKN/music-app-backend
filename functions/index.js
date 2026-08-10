@@ -8,21 +8,41 @@ const { authenticateToken, requireAdmin } = require("./authMiddleware");
 //auth
 const {login} = require("./auth")
 //song admin
-const {getSongsPaging} = require("./songAdmin")
+const {getSongsPaging} = require("./admin/songAdmin")
+
+//album admin
+const {getAlbumsPaging} = require("./admin/albumAdmin")
+
+//artist admin
+const {getArtistsPaging} = require("./admin/artistAdmin")
 
 if(!admin.apps.length) {
   admin.initializeApp();
 }
 
 const app = express();
+const adminRouter = express.Router();
+
 app.use(cors({origin: true}));
 app.use(express.json());
+
+app.get('/v1/admin-artist/artists', getArtistsPaging)
 
 //API Public
 app.post('/v1/auth/login', authenticateToken, login);
 //API authorization
 //API require Admin
-app.use('/v1/admin-song', authenticateToken, requireAdmin);
-app.get('/v1/admin-song/songs', getSongsPaging);
+adminRouter.use(authenticateToken, requireAdmin);
+
+//admin song
+adminRouter.get('/songs', getSongsPaging);
+
+//admin album
+adminRouter.get('/albums', getAlbumsPaging);
+
+//admin artist
+adminRouter.get('/artists', getArtistsPaging);
+
+app.use('/v1/admin', adminRouter);
 
 exports.api = functions.https.onRequest(app);

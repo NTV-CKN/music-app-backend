@@ -1117,6 +1117,112 @@ function getSongsList() {
   return [];
 }
 
+const artistSeedData = [
+  [1001, "Jack - J97", "jack97.webp", 0],
+  [1002, "HuyR", "huyr.webp", 0],
+  [1003, "Quang Hùng MasterD", "quanghungmasterd.webp", 0],
+  [1004, "SOOBIN", "soobin.webp", 0],
+  [1005, "Thái Trinh", "thaitrinh.webp", 0],
+  [1006, "Bùi Anh Tuấn", "buianhtuan.webp", 0],
+  [1007, "Hà Nhi", "hanhi.webp", 0],
+  [1008, "Đông Nhi", "dongnhi.webp", 0],
+  [1009, "Yanbi", "yanbi.webp", 0],
+  [1010, "Only C", "onlyc.webp", 0],
+  [1011, "Sơn Tùng M-TP", "sontungmtp.webp", 0],
+  [1012, "Đức Phúc", "ducphuc.webp", 0],
+  [1013, "Hoàng Dũng", "hoangdung.webp", 0],
+  [1014, "Lynk Lee", "lynklee.webp", 0],
+  [1015, "Hoàng Thùy Linh", "hoangthuylinh.webp", 0],
+  [1016, "Phúc Du", "phucdu.webp", 0],
+  [1017, "Hồ Ngọc Hà", "hongocha.webp", 0],
+  [1018, "Sunny Hạ Linh", "sunnyhalinh.webp", 0],
+  [1019, "Tuấn Hưng", "tuanhung.webp", 0],
+  [1020, "Trịnh Thăng Bình", "trinhthangbinh.webp", 0],
+  [1021, "Trà My Idol", "tramyidol.webp", 0],
+  [1022, "Hoa Vinh", "hoavinh.webp", 0],
+  [1023, "Bảo Trâm", "baotram.webp", 0],
+  [1024, "Tlinh", "tlinh.webp", 0],
+  [1025, "Uyên Linh", "uyenlinh.webp", 0],
+  [1026, "Minh Huy", "minhhuy.webp", 0],
+  [1027, "Bảo Anh", "baoanh.webp", 0],
+  [1028, "Hoàng Tôn", "hoangton.webp", 0],
+  [1029, "MONO", "mono.webp", 0],
+  [1030, "Phương Ly", "phuongly.webp", 0],
+  [1031, "JustaTee", "justatee.webp", 0],
+  [1032, "Văn Mai Hương", "vanmaihuong.webp", 0],
+  [1033, "Quách Thành Danh", "quachthanhdanh.webp", 0],
+  [1034, "Ngọc Diệu", "ngocdieu.webp", 0],
+  [1035, "Khánh Bình", "khanhbinh.webp", 0],
+  [1036, "Phi Nhung", "phinhung.webp", 0],
+  [1037, "Trung Quân Idol", "trungquanidol.webp", 0],
+  [1038, "Trịnh Đình Quang", "trinhdinhquang.webp", 0],
+  [1039, "Bích Phương", "bichphuong.webp", 0],
+  [1040, "Dương Hồng Loan", "duonghongloan.webp", 0],
+  [1041, "Anh Quân Idol", "anhquanidol.webp", 0],
+  [1042, "Phan Mạnh Quỳnh", "phanmanhquynh.webp", 0],
+  [1043, "Lê Bảo Bình", "lebaobinh.webp", 0],
+  [1044, "Lệ Quyên", "lequyen.webp", 0],
+  [1045, "Quang Lê", "quangle.webp", 0],
+  [1046, "Richard Marx", "richardmarx.png", 0],
+  [1047, "Karik", "karik.jpg", 100],
+  [1048, "Shayne Ward", "shayneward.jpg", 0],
+  [1049, "Mạnh Quỳnh", "manhquynh.webp", 0],
+  [1050, "Đạt Long Vinh", "datlongvinh.jpg", 30],
+  [1051, "Châu Khải Phong", "chaukhaiphong.jpg", 40],
+  [1052, "Út Nhị Mino", "utnhimino.jpg", 70],
+  [1053, "Nal", "nal.jpg", 110],
+  [1054, "Đình Dũng", "dinhdung.jpg", 300],
+  [1055, "Miu Lê", "miule.jpg", 0],
+  [1056, "Khang Việt", "khangviet.jpg", 60],
+  [1057, "Hoài Lâm", "hoailam.webp", 20],
+  [1058, "ERIK", "erik.webp", 70],
+  [1059, "Mr. Siro", "mrsiro.webp", 500],
+  [1060, "Đinh Tùng Huy", "dinhtunghuy.webp", 90],
+].map(([id, name, avatar, interested]) => ({
+  id,
+  name,
+  avatar: `https://thantrieu.com/resources/artists/${avatar}`,
+  interested,
+}));
+
+function getAlbumSeedData() {
+  const albumsByName = new Map();
+
+  getSongsList().forEach((song) => {
+    const name = song.album || "Unknown";
+    if (!albumsByName.has(name)) {
+      albumsByName.set(name, {
+        id: 10001 + albumsByName.size,
+        name,
+        songs: [],
+        size: 0,
+        artwork: song.image,
+      });
+    }
+
+    const album = albumsByName.get(name);
+    album.songs.push(String(song.id));
+    album.size = album.songs.length;
+  });
+
+  return Array.from(albumsByName.values());
+}
+
+async function seedCollection(db, collectionName, records) {
+  const batch = db.batch();
+
+  records.forEach((record) => {
+    const ref = db.collection(collectionName).doc(String(record.id));
+    batch.set(ref, {
+      ...record,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+  });
+
+  await batch.commit();
+  console.log(`Seeded ${records.length} records into "${collectionName}".`);
+}
+
 async function seedSongs() {
   const songs = getSongsList();
 
@@ -1161,6 +1267,8 @@ async function seedSongs() {
   }
 
   console.log(`Seeded ${songs.length} songs into Firestore collection "songs".`);
+  await seedCollection(db, "artists", artistSeedData);
+  await seedCollection(db, "albums", getAlbumSeedData());
 }
 
 seedSongs().catch((error) => {
