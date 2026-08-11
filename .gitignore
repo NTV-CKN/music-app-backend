@@ -83,3 +83,5 @@ firebase-service-account*.json
 
 # Firebase Agent Skills & Local Agents
 .agents/
+
+serviceAccountKey.json

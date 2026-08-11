@@ -1192,7 +1192,7 @@ function getAlbumSeedData() {
     const name = song.album || "Unknown";
     if (!albumsByName.has(name)) {
       albumsByName.set(name, {
-        id: 10001 + albumsByName.size,
+        id: String(10001 + albumsByName.size),
         name,
         songs: [],
         size: 0,
