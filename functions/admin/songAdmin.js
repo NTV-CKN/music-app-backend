@@ -190,6 +190,75 @@ const updateSong = async (req, res) => {
     }
 }
 
+const removeSong = async (req, res) => {
+    try {
+        const {
+            id
+        } = req.body;
+
+        if (!id || typeof id !== "string" || id === "") {
+            throw new Error("Mã bài hát không hợp lệ");
+        }
+
+        const db = admin.firestore();
+        const songDocRef = db.collection("songs").doc(id);
+
+        let sourceDel = null, imageDel = null;
+
+        await db.runTransaction(async (transaction) => {
+            const songDocSnapshot = await transaction.get(songDocRef);
+
+            if (!songDocSnapshot.exists)
+                throw new Error("Nhạc không tồn tại");
+
+            const album = songDocSnapshot.data().album || "";
+            sourceDel = songDocSnapshot.data().source;
+            imageDel = songDocSnapshot.data().image;
+
+            let albumDocRef = null;
+            if (album !== "") {
+                const albumQuerySnapshot = await transaction.get(
+                    db.collection("albums")
+                        .where("name", "==", album)
+                        .limit(1)
+                );
+
+                if (!albumQuerySnapshot.empty) {
+                    albumDocRef = albumQuerySnapshot.docs[0].ref;
+                }
+            }
+
+            //remove song
+            transaction.delete(songDocRef);
+
+            //remove song trong album
+            if (albumDocRef) {
+                transaction.update(albumDocRef, {
+                    songs: FieldValue.arrayRemove(id),
+                    updatedAt: FieldValue.serverTimestamp(),
+                    size: FieldValue.increment(-1)
+                });
+            }
+        });
+        const deleteTasks = [];
+        if (imageDel) deleteTasks.push(deleteFileFromStorage(imageDel));
+        if (sourceDel) deleteTasks.push(deleteFileFromStorage(sourceDel));
+
+        if (deleteTasks.length > 0) {
+            await Promise.allSettled(deleteTasks);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Xóa thành công"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Xóa thất bại: ${error.message}`
+        });
+    }
+}
 
 const saveSong = async (req, res) => {
     try {
@@ -296,5 +365,5 @@ const saveSong = async (req, res) => {
 }
 
 module.exports = {
-    getSongsPaging, saveSong, updateSong
+    getSongsPaging, saveSong, updateSong, removeSong
 };

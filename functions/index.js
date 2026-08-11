@@ -13,7 +13,7 @@ const { authenticateToken, requireAdmin } = require("./authMiddleware");
 //auth
 const {login} = require("./auth")
 //song admin
-const {getSongsPaging, saveSong, updateSong} = require("./admin/songAdmin")
+const {getSongsPaging, saveSong, updateSong, removeSong} = require("./admin/songAdmin")
 
 //album admin
 const {getAlbumsPaging} = require("./admin/albumAdmin")
@@ -39,6 +39,7 @@ adminRouter.use(authenticateToken, requireAdmin);
 adminRouter.get('/songs', getSongsPaging);
 adminRouter.post('/save-song', saveSong);
 adminRouter.post('/update-song', updateSong);
+adminRouter.post('/remove-song', removeSong);
 
 //admin album
 adminRouter.get('/albums', getAlbumsPaging);
