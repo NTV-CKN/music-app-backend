@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
 const { Genre } = require("../genreSong");
 const { FieldValue } = require("firebase-admin/firestore");
+const { moveTempFileToDest, deleteFileFromStorage } = require("./utilsStorage");
 
 const bucket = admin.storage().bucket();
 
@@ -45,44 +46,150 @@ const getSongsPaging = async (req, res) => {
         });
     }
 }
-async function moveTempFileToSongs(tempInput, destinationFolder, songId) {
-    if (!tempInput || typeof tempInput !== 'string') return tempInput;
 
-    const bucket = admin.storage().bucket();
-    let tempPath = tempInput;
+const updateSong = async (req, res) => {
+    try {
+        const {
+            id,
+            title,
+            artistId,
+            album,
+            artist,
+            source,
+            image,
+            duration,
+            favorite,
+            counter,
+            replay,
+            isVip,
+            genre,
+            energy
+        } = req.body;
 
-    if (tempInput.includes("temp_storage")) {
-        const decoded = decodeURIComponent(tempInput);
-        const match = decoded.match(/temp_storage\/[^?#]+/);
-        if (match) {
-            tempPath = match[0];
+        if (!id || typeof id !== 'string' || id.trim() === '') {
+            return res.status(400).json({ message: "ID bài hát không được để trống khi update" });
         }
+
+        if (!title || typeof title !== 'string' || title.trim() === '') {
+            return res.status(400).json({ message: "Tên bài hát (title) không được để trống" });
+        }
+
+        if (!album || typeof album !== 'string' || album.trim() === '') {
+            return res.status(400).json({ message: "Tên album không được để trống" });
+        }
+
+        const validGenres = Object.values(Genre);
+        if (!genre || !validGenres.includes(genre.toUpperCase())) {
+            return res.status(400).json({
+                message: `Thể loại (genre) không hợp lệ. Danh sách hợp lệ: ${validGenres.join(', ')}`
+            });
+        }
+
+        const db = admin.firestore();
+        const songRef = db.collection("songs").doc(id);
+
+        const finalSongId = songRef.id;
+        const finalImage = await moveTempFileToDest(image, "songs/images", finalSongId);
+        const finalSource = await moveTempFileToDest(source, "songs/audio", finalSongId);
+
+        const newAlbumName = album.trim();
+
+        let oldImage = null, oldSource;
+
+        await db.runTransaction(async (transaction) => {
+            songDoc = await transaction.get(songRef);
+            if (!songDoc.exists) {
+                throw new Error("Không tìm thấy bài hát cần cập nhật.");
+            }
+
+            oldImage = songDoc.data().image;
+            oldSource = songDoc.data().source;
+
+            const oldAlbumName = songDoc.data().album || "";
+            const isAlbumChanged = oldAlbumName !== "" && oldAlbumName !== newAlbumName;
+
+            let oldAlbumRef = null;
+            if (isAlbumChanged) {
+                const oldAlbumSnapshot = await transaction
+                    .get(db.collection("albums").where("name", "==", oldAlbumName).limit(1));
+
+
+                if (!oldAlbumSnapshot.empty) {
+                    oldAlbumRef = oldAlbumSnapshot.docs[0].ref;
+                }
+            }
+
+            let newAlbumRef = null;
+            if (oldAlbumName !== newAlbumName) {
+                const newAlbumSnapshot = await transaction.get(
+                    db
+                        .collection("albums")
+                        .where("name", "==", newAlbumName)
+                        .limit(1)
+                );
+
+                if (newAlbumSnapshot.empty)
+                    throw new Error("Không tìm thấy album mới này");
+
+                newAlbumRef = newAlbumSnapshot.docs[0].ref;
+            }
+
+            const songData = {
+                id: finalSongId,
+                title: title.trim(),
+                artistId: Number(artistId) || 0,
+                album: newAlbumName,
+                artist: artist || "",
+                source: finalSource || "",
+                image: finalImage || "",
+                duration: Number(duration) || 0,
+                favorite: Boolean(favorite),
+                counter: Number(counter) || 0,
+                replay: Number(replay) || 0,
+                isVip: Boolean(isVip),
+                genre: genre.toUpperCase(),
+                energy: typeof energy === 'number' ? energy : 0.5,
+                updatedAt: FieldValue.serverTimestamp()
+            };
+
+            transaction.update(songRef, songData);
+
+            if (oldAlbumRef) {
+                transaction.update(oldAlbumRef, {
+                    songs: FieldValue.arrayRemove(finalSongId),
+                    updatedAt: FieldValue.serverTimestamp(),
+                    size: FieldValue.increment(-1)
+                });
+            }
+
+            if (newAlbumRef) {
+                transaction.update(newAlbumRef, {
+                    songs: FieldValue.arrayUnion(finalSongId),
+                    updatedAt: FieldValue.serverTimestamp(),
+                    size: FieldValue.increment(1)
+                })
+            }
+        });
+
+        try {
+            if (oldSource) await deleteFileFromStorage(oldSource);
+            if (oldImage) await deleteFileFromStorage(oldImage);
+        } catch (error) {
+
+        }
+
+        return res.status(200).json({
+            message: "Cập nhật bài hát thành công!",
+            success: true
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Cập nhật thất bại: " + error.message,
+            success: false
+        });
     }
-
-    if (!tempPath.startsWith("temp_storage/")) {
-        console.log("File không thuộc temp_storage, bỏ qua:", tempInput);
-        return tempInput;
-    }
-
-    const tempFile = bucket.file(tempPath);
-    const [exists] = await tempFile.exists();
-    if (!exists) {
-        console.log("File không tồn tại trên Cloud Storage:", tempPath);
-        return tempInput;
-    }
-
-    const extMatch = tempPath.match(/\.([a-zA-Z0-9]+)$/);
-    const ext = extMatch ? extMatch[0] : "";
-    
-    const destinationPath = `${destinationFolder}/${songId}_${Date.now()}${ext}`;
-    const destinationFile = bucket.file(destinationPath);
-
-    await tempFile.copy(destinationFile);
-    await tempFile.delete();
-
-    await destinationFile.makePublic();
-    return `https://storage.googleapis.com/${bucket.name}/${destinationPath}`;
 }
+
 
 const saveSong = async (req, res) => {
     try {
@@ -125,8 +232,8 @@ const saveSong = async (req, res) => {
             : db.collection("songs").doc();
 
         const finalSongId = songRef.id;
-        const finalImage = await moveTempFileToSongs(image, "songs/images", finalSongId);
-        const finalSource = await moveTempFileToSongs(source, "songs/audio", finalSongId);
+        const finalImage = await moveTempFileToDest(image, "songs/images", finalSongId);
+        const finalSource = await moveTempFileToDest(source, "songs/audio", finalSongId);
 
         const songData = {
             id: finalSongId,
@@ -189,5 +296,5 @@ const saveSong = async (req, res) => {
 }
 
 module.exports = {
-    getSongsPaging, saveSong
+    getSongsPaging, saveSong, updateSong
 };
