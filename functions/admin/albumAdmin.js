@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const { moveTempFileToDest } = require("./utilsStorage");
+const { moveTempFileToDest, deleteFileFromStorage } = require("./utilsStorage");
 const { FieldValue } = require("firebase-admin/firestore");
 
 const getAlbumsPaging = async (req, res) => {
@@ -150,6 +150,61 @@ const saveAlbum = async (req, res) => {
     }
 };
 
+const deleteAlbum = async (req, res) => {
+    let artwork = null;
+    try {
+        const { id } = req.body;
+
+        if (!id || typeof id !== "string" || id.trim() === "") {
+            throw new Error("Id album không hợp lệ");
+        }
+
+        const db = admin.firestore();
+
+        await db.runTransaction(async (transaction) => {
+            const albumSnapshot = await transaction.get(
+                db.collection("albums")
+                    .doc(id)
+            );
+            if (!albumSnapshot.exists) {
+                throw new Error("Không tìm thấy album này");
+            }
+
+
+            const songs = albumSnapshot.data().songs || [];
+            artwork = albumSnapshot.data().artwork;
+
+            const songsSnapshot = await Promise.all(
+                songs.map(songId => transaction.get(db.collection("songs").doc(songId))));
+
+            //write
+            songsSnapshot.forEach(songSnap => {
+                if (songSnap.exists) {
+                    transaction.update(
+                        songSnap.ref, {
+                        album: "",
+                        updatedAt: FieldValue.serverTimestamp()
+                    })
+                }
+            });
+
+            transaction.delete(albumSnapshot.ref);
+        });
+
+        await deleteFileFromStorage(artwork);
+
+        return res.status(200).json({
+            success: true,
+            message: `Xóa thành công album`
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: `Xóa album thất bại: ${error.message}`
+        });
+    }
+}
+
 module.exports = {
-    getAlbumsPaging, saveAlbum
+    getAlbumsPaging, saveAlbum, deleteAlbum
 }

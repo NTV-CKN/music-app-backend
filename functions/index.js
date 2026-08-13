@@ -16,7 +16,7 @@ const {login} = require("./auth")
 const {getSongsPaging, saveSong, updateSong, removeSong} = require("./admin/songAdmin")
 
 //album admin
-const {getAlbumsPaging, saveAlbum} = require("./admin/albumAdmin")
+const {getAlbumsPaging, saveAlbum, deleteAlbum} = require("./admin/albumAdmin")
 
 //artist admin
 const {getArtistsPaging} = require("./admin/artistAdmin")
@@ -44,6 +44,7 @@ adminRouter.post('/remove-song', removeSong);
 //admin album
 adminRouter.get('/albums', getAlbumsPaging);
 adminRouter.post('/save-album', saveAlbum);
+adminRouter.post('/delete-album', deleteAlbum);
 
 //admin artist
 adminRouter.get('/artists', getArtistsPaging);
