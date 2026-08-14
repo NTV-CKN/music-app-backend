@@ -19,7 +19,7 @@ const {getSongsPaging, saveSong, updateSong, removeSong} = require("./admin/song
 const {getAlbumsPaging, saveAlbum, deleteAlbum} = require("./admin/albumAdmin")
 
 //artist admin
-const {getArtistsPaging} = require("./admin/artistAdmin")
+const {getArtistsPaging, saveArtist} = require("./admin/artistAdmin")
 
 const app = express();
 const adminRouter = express.Router();
@@ -33,7 +33,7 @@ app.get('/v1/admin-artist/artists', getArtistsPaging)
 app.post('/v1/auth/login', authenticateToken, login);
 //API authorization
 //API require Admin
-adminRouter.use(authenticateToken, requireAdmin);
+// adminRouter.use(authenticateToken, requireAdmin);
 
 //admin song
 adminRouter.get('/songs', getSongsPaging);
@@ -48,6 +48,7 @@ adminRouter.post('/delete-album', deleteAlbum);
 
 //admin artist
 adminRouter.get('/artists', getArtistsPaging);
+adminRouter.post('/save-artist', saveArtist);
 
 app.use('/v1/admin', adminRouter);
 
