@@ -22,7 +22,7 @@ const {getAlbumsPaging, saveAlbum, deleteAlbum} = require("./admin/albumAdmin")
 const {getArtistsPaging, saveArtist, deleteArtist} = require("./admin/artistAdmin")
 
 //subscription admin
-const {getSubscriptionsPaging} = require("./admin/subscriptionAdmin")
+const {getSubscriptionsPaging, saveSubscription, updateSubscription} = require("./admin/subscriptionAdmin")
 
 const app = express();
 const adminRouter = express.Router();
@@ -56,6 +56,8 @@ adminRouter.post('/delete-artist', deleteArtist);
 
 //admin subscription
 adminRouter.get('/subscriptions', getSubscriptionsPaging);
+adminRouter.post('/save-subscription', saveSubscription);
+adminRouter.post('/update-subscription', updateSubscription);
 
 app.use('/v1/admin', adminRouter);
 
