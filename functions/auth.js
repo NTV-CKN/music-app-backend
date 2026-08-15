@@ -23,6 +23,8 @@ const login = async (req, res) => {
         displayName: name,
         avatar: avatar,
         role: "user",
+        isVip: false,
+        vipExpiryDate: null,
         createAt: FieldValue.serverTimestamp(),
         updateAt: FieldValue.serverTimestamp(),
       };

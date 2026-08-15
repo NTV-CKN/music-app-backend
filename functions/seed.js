@@ -1185,6 +1185,59 @@ const artistSeedData = [
   interested,
 }));
 
+const subscriptionSeedData = [
+  {
+    id: "VIP_4M",
+    name: "VIP 4 Months",
+    description: "Premium access for four months with ad-free listening and offline downloads.",
+    price: 79,
+    durationDays: 120,
+    isActive: true,
+    createAt: "2024-01-01T00:00:00Z",
+    updateAt: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "VIP_1Y",
+    name: "VIP 1 Year",
+    description: "Full premium access for one year with all exclusive features unlocked.",
+    price: 149,
+    durationDays: 365,
+    isActive: true,
+    createAt: "2024-01-05T00:00:00Z",
+    updateAt: "2024-01-05T00:00:00Z",
+  },
+  {
+    id: "PREMIUM_1M",
+    name: "Premium 1 Month",
+    description: "Ideal for users who want a month of premium music streaming experience.",
+    price: 29.99,
+    durationDays: 30,
+    isActive: true,
+    createAt: "2024-02-10T00:00:00Z",
+    updateAt: "2024-02-10T00:00:00Z",
+  },
+  {
+    id: "FAMILY_6M",
+    name: "Family 6 Months",
+    description: "Shared family plan for up to six members with premium playback benefits.",
+    price: 109,
+    durationDays: 180,
+    isActive: true,
+    createAt: "2024-03-15T00:00:00Z",
+    updateAt: "2024-03-15T00:00:00Z",
+  },
+  {
+    id: "FREE_7D",
+    name: "Free 7 Days",
+    description: "A trial package for new users to explore premium features for one week.",
+    price: 0,
+    durationDays: 7,
+    isActive: true,
+    createAt: "2024-04-20T00:00:00Z",
+    updateAt: "2024-04-20T00:00:00Z",
+  },
+];
+
 function getAlbumSeedData() {
   const albumsByName = new Map();
 
@@ -1269,6 +1322,7 @@ async function seedSongs() {
   console.log(`Seeded ${songs.length} songs into Firestore collection "songs".`);
   await seedCollection(db, "artists", artistSeedData);
   await seedCollection(db, "albums", getAlbumSeedData());
+  await seedCollection(db, "subscriptions", subscriptionSeedData);
 }
 
 seedSongs().catch((error) => {
