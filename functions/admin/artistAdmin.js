@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const { moveTempFileToDest } = require("./utilsStorage");
+const { moveTempFileToDest, deleteFileFromStorage } = require("./utilsStorage");
 const { FieldValue } = require("firebase-admin/firestore");
 const Long = require("long");
 
@@ -63,19 +63,25 @@ const saveArtist = async (req, res) => {
         }
 
         const db = admin.firestore();
-        
+
         const artistIdLong = Long.fromValue(id);
-        let artistIdStr = String(artistIdLong);
-        
+        const artistIdNum = artistIdLong.toNumber();
+        let artistIdStr = String(artistIdNum);
+
         const finalAvatar = await moveTempFileToDest(avatar, "artists/avatar", artistIdStr);
 
         let isSongsUpdate = false;
+        let oldAvatar = null;
+
         await db.runTransaction(async (transaction) => {
             const artistDocSnap = await transaction.get(
                 db.collection("artists").doc(artistIdStr)
             );
 
             if (artistDocSnap.exists) {
+                if (artistDocSnap.data().avatar !== finalAvatar) {
+                    oldAvatar = artistDocSnap.data().avatar;
+                }
                 isSongsUpdate = artistDocSnap.data().name !== name
 
                 transaction.update(artistDocSnap.ref, {
@@ -85,7 +91,7 @@ const saveArtist = async (req, res) => {
                 });
             } else {
                 transaction.set(artistDocSnap.ref, {
-                    id: id,
+                    id: artistIdNum,
                     name: name,
                     avatar: finalAvatar,
                     amount_interested: amountInterested ?? 0,
@@ -98,9 +104,8 @@ const saveArtist = async (req, res) => {
         if (isSongsUpdate) {
             const songsSnapshot = await db
                 .collection("songs")
-                .where("artistId", "==", artistIdStr)
+                .where("artistId", "in", [artistIdNum])
                 .get();
-
             if (!songsSnapshot.empty) {
                 const docs = songsSnapshot.docs;
                 const CHUNK_SIZE = 400;
@@ -121,6 +126,10 @@ const saveArtist = async (req, res) => {
             }
         }
 
+        if (oldAvatar) {
+            await deleteFileFromStorage(oldAvatar);
+        }
+
         return res.status(200).json({
             message: "Lưu nghệ sĩ thành công",
             success: true
@@ -133,6 +142,81 @@ const saveArtist = async (req, res) => {
     }
 }
 
+const deleteArtist = async (req, res) => {
+    try {
+        const { id } = req.body;
+
+        if (id === undefined || id === null || id === "") {
+            throw new Error("Mã nghệ sĩ không hợp lệ");
+        }
+
+        const db = admin.firestore();
+
+        const artistIdLong = Long.fromValue(id);
+        const artistIdNum = artistIdLong.toNumber();
+        const artistIdStr = String(artistIdNum);
+
+        const artistRef = db.collection("artists").doc(artistIdStr);
+        const artistSnap = await artistRef.get();
+
+        if (!artistSnap.exists) {
+            return res.status(404).json({
+                message: "Không tìm thấy nghệ sĩ để xóa",
+                success: false
+            });
+        }
+
+        const artistData = artistSnap.data();
+        const avatarUrl = artistData ? artistData.avatar : null;
+
+        const songsSnapshot = await db
+            .collection("songs")
+            .where("artistId", "in", [artistIdNum, artistIdStr])
+            .get();
+
+        if (!songsSnapshot.empty) {
+            const docs = songsSnapshot.docs;
+            const CHUNK_SIZE = 400;
+
+            for (let i = 0; i < docs.length; i += CHUNK_SIZE) {
+                const chunk = docs.slice(i, i + CHUNK_SIZE);
+                const batch = db.batch();
+
+                chunk.forEach(songDoc => {
+                    batch.update(
+                        songDoc.ref,{
+                            artist: "",
+                            artistId: Number()
+                        }
+                    ); 
+                });
+
+                await batch.commit();
+            }
+        }
+
+        await artistRef.delete();
+
+        if (avatarUrl) {
+            try {
+                await deleteFileFromStorage(avatarUrl);
+            } catch (storageErr) {
+                console.error("Lỗi xóa file avatar trên Storage:", storageErr.message);
+            }
+        }
+
+        return res.status(200).json({
+            message: "Xóa nghệ sĩ thành công",
+            success: true
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: `Xóa nghệ sĩ thất bại: ${error.message}`,
+            success: false
+        });
+    }
+};
+
 module.exports = {
-    getArtistsPaging, saveArtist
+    getArtistsPaging, saveArtist, deleteArtist
 }

@@ -19,7 +19,7 @@ const {getSongsPaging, saveSong, updateSong, removeSong} = require("./admin/song
 const {getAlbumsPaging, saveAlbum, deleteAlbum} = require("./admin/albumAdmin")
 
 //artist admin
-const {getArtistsPaging, saveArtist} = require("./admin/artistAdmin")
+const {getArtistsPaging, saveArtist, deleteArtist} = require("./admin/artistAdmin")
 
 const app = express();
 const adminRouter = express.Router();
@@ -49,6 +49,7 @@ adminRouter.post('/delete-album', deleteAlbum);
 //admin artist
 adminRouter.get('/artists', getArtistsPaging);
 adminRouter.post('/save-artist', saveArtist);
+adminRouter.post('/delete-artist', deleteArtist);
 
 app.use('/v1/admin', adminRouter);
 
