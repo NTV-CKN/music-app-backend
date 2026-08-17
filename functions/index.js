@@ -12,17 +12,12 @@ const cors = require("cors");
 const { authenticateToken, requireAdmin } = require("./authMiddleware");
 //auth
 const {login} = require("./auth")
-//song admin
-const {getSongsPaging, saveSong, updateSong, removeSong} = require("./admin/songAdmin")
 
-//album admin
-const {getAlbumsPaging, saveAlbum, deleteAlbum} = require("./admin/albumAdmin")
-
-//artist admin
-const {getArtistsPaging, saveArtist, deleteArtist} = require("./admin/artistAdmin")
-
-//subscription admin
-const {getSubscriptionsPaging, saveSubscription, updateSubscription} = require("./admin/subscriptionAdmin")
+//routes
+const songRoutes = require("./routes/song.route");
+const albumRoutes = require("./routes/album.route");
+const artistRoutes = require("./routes/artist.route");
+const subscriptionRoutes = require("./routes/subscription.route");
 
 const app = express();
 const adminRouter = express.Router();
@@ -30,34 +25,18 @@ const adminRouter = express.Router();
 app.use(cors({origin: true}));
 app.use(express.json());
 
-app.get('/v1/admin-artist/artists', getArtistsPaging)
-
 //API Public
 app.post('/v1/auth/login', authenticateToken, login);
+
 //API authorization
-//API require Admin
-// adminRouter.use(authenticateToken, requireAdmin);
+//API require Admin - middleware applied to all admin routes
+adminRouter.use(authenticateToken, requireAdmin);
 
-//admin song
-adminRouter.get('/songs', getSongsPaging);
-adminRouter.post('/save-song', saveSong);
-adminRouter.post('/update-song', updateSong);
-adminRouter.post('/remove-song', removeSong);
-
-//admin album
-adminRouter.get('/albums', getAlbumsPaging);
-adminRouter.post('/save-album', saveAlbum);
-adminRouter.post('/delete-album', deleteAlbum);
-
-//admin artist
-adminRouter.get('/artists', getArtistsPaging);
-adminRouter.post('/save-artist', saveArtist);
-adminRouter.post('/delete-artist', deleteArtist);
-
-//admin subscription
-adminRouter.get('/subscriptions', getSubscriptionsPaging);
-adminRouter.post('/save-subscription', saveSubscription);
-adminRouter.post('/update-subscription', updateSubscription);
+// Mount route modules on adminRouter - middleware applies to all
+adminRouter.use(songRoutes);
+adminRouter.use(albumRoutes);
+adminRouter.use(artistRoutes);
+adminRouter.use(subscriptionRoutes);
 
 app.use('/v1/admin', adminRouter);
 
