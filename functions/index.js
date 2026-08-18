@@ -29,10 +29,6 @@ app.use(express.json());
 //API Public
 app.post('/v1/auth/login', authenticateToken, login);
 
-//API authorization
-//API require Admin - middleware applied to all admin routes
-adminRouter.use(authenticateToken, requireAdmin);
-
 // Mount route modules on adminRouter - middleware applies to all
 adminRouter.use(songRoutes);
 adminRouter.use(albumRoutes);

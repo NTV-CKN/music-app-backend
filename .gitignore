@@ -85,3 +85,5 @@ firebase-service-account*.json
 .agents/
 
 serviceAccountKey.json
+songs_backup.json
+new_songs.json
