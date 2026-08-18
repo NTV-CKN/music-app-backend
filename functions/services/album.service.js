@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
-const { moveTempFileToDest, deleteFileFromStorage } = require("../admin/utilsStorage");
-const { FieldValue } = require("firebase-admin/firestore");
+const {moveTempFileToDest, deleteFileFromStorage} = require("../admin/utilsStorage");
+const {FieldValue} = require("firebase-admin/firestore");
 
 class AlbumService {
   async getAlbumsPaging(query, key, limit) {
@@ -12,14 +12,14 @@ class AlbumService {
       const strEndCode = query + "\uf8ff";
 
       queryAlbum = queryAlbum
-        .where("name", ">=", strFrontCode)
-        .where("name", "<=", strEndCode);
+          .where("name", ">=", strFrontCode)
+          .where("name", "<=", strEndCode);
     }
 
     const albumsSnap = await queryAlbum
-      .limit(limit)
-      .offset(offset)
-      .get();
+        .limit(limit)
+        .offset(offset)
+        .get();
 
     return albumsSnap.docs.map((album) => ({
       ...album.data(),
@@ -27,7 +27,7 @@ class AlbumService {
   }
 
   async saveAlbum(payload) {
-    const { id, name, songs, size, artwork } = payload;
+    const {id, name, songs, size, artwork} = payload;
 
     if (!id || typeof id !== "string" || id.trim() === "") {
       throw new Error("Id album không hợp lệ");
@@ -38,7 +38,7 @@ class AlbumService {
     }
 
     if (!Array.isArray(songs) || songs.length === 0 ||
-      !songs.every(item => typeof item === "string" && item.trim() !== "")) {
+      !songs.every((item) => typeof item === "string" && item.trim() !== "")) {
       throw new Error("Mảng bài hát không hợp lệ hoặc chứa ID rỗng");
     }
 
@@ -62,10 +62,10 @@ class AlbumService {
       if (albumDocSnap.exists) {
         oldSongs = albumDocSnap.data().songs || [];
       }
-      const removedSongIds = oldSongs.filter(oldId => !songs.includes(oldId));
+      const removedSongIds = oldSongs.filter((oldId) => !songs.includes(oldId));
 
       const songSnaps = await Promise.all(
-        songs.map(songId => transaction.get(db.collection("songs").doc(songId)))
+          songs.map((songId) => transaction.get(db.collection("songs").doc(songId))),
       );
 
       songSnaps.forEach((songSnap, index) => {
@@ -75,22 +75,22 @@ class AlbumService {
       });
 
       const removedSongSnaps = await Promise.all(
-        removedSongIds.map(removedId => transaction.get(db.collection("songs").doc(removedId)))
+          removedSongIds.map((removedId) => transaction.get(db.collection("songs").doc(removedId))),
       );
 
-      //update album in song
-      songSnaps.forEach(songSnap => {
+      // update album in song
+      songSnaps.forEach((songSnap) => {
         transaction.update(songSnap.ref, {
           album: name.trim(),
-          updatedAt: FieldValue.serverTimestamp()
+          updatedAt: FieldValue.serverTimestamp(),
         });
       });
 
-      removedSongSnaps.forEach(removedSnap => {
+      removedSongSnaps.forEach((removedSnap) => {
         if (removedSnap.exists) {
           transaction.update(removedSnap.ref, {
             album: "",
-            updatedAt: FieldValue.serverTimestamp()
+            updatedAt: FieldValue.serverTimestamp(),
           });
         }
       });
@@ -103,7 +103,7 @@ class AlbumService {
           size: size,
           artwork: finalArtwork,
           createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp()
+          updatedAt: FieldValue.serverTimestamp(),
         });
       } else {
         transaction.update(albumDocRef, {
@@ -111,12 +111,12 @@ class AlbumService {
           songs: songs,
           size: size,
           artwork: finalArtwork,
-          updatedAt: FieldValue.serverTimestamp()
+          updatedAt: FieldValue.serverTimestamp(),
         });
       }
     });
 
-    return { success: true, message: "Lưu album và cập nhật danh sách bài hát thành công" };
+    return {success: true, message: "Lưu album và cập nhật danh sách bài hát thành công"};
   }
 
   async deleteAlbum(id) {
@@ -129,7 +129,7 @@ class AlbumService {
 
     await db.runTransaction(async (transaction) => {
       const albumSnapshot = await transaction.get(
-        db.collection("albums").doc(id)
+          db.collection("albums").doc(id),
       );
       if (!albumSnapshot.exists) {
         throw new Error("Không tìm thấy album này");
@@ -139,15 +139,15 @@ class AlbumService {
       artwork = albumSnapshot.data().artwork;
 
       const songsSnapshot = await Promise.all(
-        songs.map(songId => transaction.get(db.collection("songs").doc(songId)))
+          songs.map((songId) => transaction.get(db.collection("songs").doc(songId))),
       );
 
-      //write
-      songsSnapshot.forEach(songSnap => {
+      // write
+      songsSnapshot.forEach((songSnap) => {
         if (songSnap.exists) {
           transaction.update(songSnap.ref, {
             album: "",
-            updatedAt: FieldValue.serverTimestamp()
+            updatedAt: FieldValue.serverTimestamp(),
           });
         }
       });
@@ -159,7 +159,7 @@ class AlbumService {
       await deleteFileFromStorage(artwork);
     }
 
-    return { success: true, message: `Xóa thành công album` };
+    return {success: true, message: `Xóa thành công album`};
   }
 }
 

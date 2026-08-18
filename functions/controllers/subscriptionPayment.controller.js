@@ -1,55 +1,53 @@
 const paymentService = require("../services/subscriptionPayment.service");
 
 const createPaymentUrl = async (req, res) => {
-    try {
-        const { subscriptionId } = req.body;
-        const userId = req.user.uid;
+  try {
+    const {subscriptionId} = req.body;
+    const userId = req.user.uid;
 
-        if (!subscriptionId) {
-            return res.status(400).json({
-                status: "error",
-                message: "subscriptionId không được để trống"
-            });
-        }
-
-        const clientIp = (req.headers["x-forwarded-for"] || req.ip || "127.0.0.1")
-            .split(",")[0]
-            .trim();
-
-        const result = await paymentService.createPaymentUrl(userId, subscriptionId, clientIp);
-
-        return res.status(200).json({
-            status: "success",
-            paymentUrl: result.paymentUrl,
-            orderId: result.orderId
-        });
-    } catch (error) {
-        const statusCode = error.statusCode || 500;
-        return res.status(statusCode).json({
-            status: "error",
-            message: error.message || "Đã xảy ra lỗi khi tạo yêu cầu thanh toán"
-        });
+    if (!subscriptionId) {
+      return res.status(400).json({
+        status: "error",
+        message: "subscriptionId không được để trống",
+      });
     }
+
+    const clientIp = (req.headers["x-forwarded-for"] || req.ip || "127.0.0.1")
+        .split(",")[0]
+        .trim();
+
+    const result = await paymentService.createPaymentUrl(userId, subscriptionId, clientIp);
+
+    return res.status(200).json({
+      status: "success",
+      paymentUrl: result.paymentUrl,
+      orderId: result.orderId,
+    });
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+    return res.status(statusCode).json({
+      status: "error",
+      message: error.message || "Đã xảy ra lỗi khi tạo yêu cầu thanh toán",
+    });
+  }
 };
 
 const handleVnpayReturn = async (req, res) => {
-    try {
-        const result = await paymentService.processVnpayReturn(req.query);
-        return res.status(200).send(renderHtmlResponse(result));
-    } catch (error) {
-        console.error("Lỗi Controller vnpay-return:", error);
-        return res.status(500).send(renderHtmlResponse({
-            success: false,
-            title: "Lỗi hệ thống",
-            message: error.message || "Đã xảy ra lỗi trong quá trình xử lý đơn hàng."
-        }));
-    }
+  try {
+    const result = await paymentService.processVnpayReturn(req.query);
+    return res.status(200).send(renderHtmlResponse(result));
+  } catch (error) {
+    console.error("Lỗi Controller vnpay-return:", error);
+    return res.status(500).send(renderHtmlResponse({
+      success: false,
+      title: "Lỗi hệ thống",
+      message: error.message || "Đã xảy ra lỗi trong quá trình xử lý đơn hàng.",
+    }));
+  }
 };
 
-function renderHtmlResponse({ success, title, message }) {
-    const iconColor = success ? "#4CAF50" : "#F44336";
-
-    return `
+function renderHtmlResponse({success, title, message}) {
+  return `
     <!DOCTYPE html>
     <html lang="vi">
     <head>
@@ -86,6 +84,6 @@ function renderHtmlResponse({ success, title, message }) {
 }
 
 module.exports = {
-    createPaymentUrl,
-    handleVnpayReturn
+  createPaymentUrl,
+  handleVnpayReturn,
 };

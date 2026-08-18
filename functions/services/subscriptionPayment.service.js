@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 const vnpay = require("../config/vnpayConfig");
-const { FieldValue, Timestamp } = require("firebase-admin/firestore");
+const {FieldValue, Timestamp} = require("firebase-admin/firestore");
 require("dotenv").config();
 
 class PaymentService {

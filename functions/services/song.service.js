@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
-const { Genre } = require("../genreSong");
-const { FieldValue } = require("firebase-admin/firestore");
-const { moveTempFileToDest, deleteFileFromStorage } = require("../admin/utilsStorage");
+const {Genre} = require("../genreSong");
+const {FieldValue} = require("firebase-admin/firestore");
+const {moveTempFileToDest, deleteFileFromStorage} = require("../admin/utilsStorage");
 
 class SongService {
   async getSongsPaging(searchQuery, pageKey, limit) {
@@ -13,16 +13,16 @@ class SongService {
       const strEndCode = searchQuery + "\uf8ff";
 
       songsQuery = songsQuery
-        .where("title", ">=", strFrontCode)
-        .where("title", "<=", strEndCode);
+          .where("title", ">=", strFrontCode)
+          .where("title", "<=", strEndCode);
     }
 
     const songsSnap = await songsQuery
-      .limit(limit)
-      .offset(offset)
-      .get();
+        .limit(limit)
+        .offset(offset)
+        .get();
 
-    return songsSnap.docs.map(song => ({
+    return songsSnap.docs.map((song) => ({
       ...song.data(),
     }));
   }
@@ -42,24 +42,24 @@ class SongService {
       replay,
       isVip,
       genre,
-      energy
+      energy,
     } = payload;
 
-    if (!id || typeof id !== 'string' || id.trim() === '') {
+    if (!id || typeof id !== "string" || id.trim() === "") {
       throw new Error("ID bài hát không được để trống khi update");
     }
 
-    if (!title || typeof title !== 'string' || title.trim() === '') {
+    if (!title || typeof title !== "string" || title.trim() === "") {
       throw new Error("Tên bài hát (title) không được để trống");
     }
 
-    if (!album || typeof album !== 'string' || album.trim() === '') {
+    if (!album || typeof album !== "string" || album.trim() === "") {
       throw new Error("Tên album không được để trống");
     }
 
     const validGenres = Object.values(Genre);
     if (!genre || !validGenres.includes(genre.toUpperCase())) {
-      throw new Error(`Thể loại (genre) không hợp lệ. Danh sách hợp lệ: ${validGenres.join(', ')}`);
+      throw new Error(`Thể loại (genre) không hợp lệ. Danh sách hợp lệ: ${validGenres.join(", ")}`);
     }
 
     const db = admin.firestore();
@@ -71,7 +71,7 @@ class SongService {
 
     const newAlbumName = album.trim();
 
-    let oldImage = null, oldSource;
+    let oldImage = null; let oldSource;
 
     await db.runTransaction(async (transaction) => {
       const songDoc = await transaction.get(songRef);
@@ -88,7 +88,7 @@ class SongService {
       let oldAlbumRef = null;
       if (isAlbumChanged) {
         const oldAlbumSnapshot = await transaction.get(
-          db.collection("albums").where("name", "==", oldAlbumName).limit(1)
+            db.collection("albums").where("name", "==", oldAlbumName).limit(1),
         );
 
         if (!oldAlbumSnapshot.empty) {
@@ -99,11 +99,12 @@ class SongService {
       let newAlbumRef = null;
       if (oldAlbumName !== newAlbumName) {
         const newAlbumSnapshot = await transaction.get(
-          db.collection("albums").where("name", "==", newAlbumName).limit(1)
+            db.collection("albums").where("name", "==", newAlbumName).limit(1),
         );
 
-        if (newAlbumSnapshot.empty)
+        if (newAlbumSnapshot.empty) {
           throw new Error("Không tìm thấy album mới này");
+        }
 
         newAlbumRef = newAlbumSnapshot.docs[0].ref;
       }
@@ -122,8 +123,8 @@ class SongService {
         replay: Number(replay) || 0,
         isVip: Boolean(isVip),
         genre: genre.toUpperCase(),
-        energy: typeof energy === 'number' ? energy : 0.5,
-        updatedAt: FieldValue.serverTimestamp()
+        energy: typeof energy === "number" ? energy : 0.5,
+        updatedAt: FieldValue.serverTimestamp(),
       };
 
       transaction.update(songRef, songData);
@@ -132,7 +133,7 @@ class SongService {
         transaction.update(oldAlbumRef, {
           songs: FieldValue.arrayRemove(finalSongId),
           updatedAt: FieldValue.serverTimestamp(),
-          size: FieldValue.increment(-1)
+          size: FieldValue.increment(-1),
         });
       }
 
@@ -140,7 +141,7 @@ class SongService {
         transaction.update(newAlbumRef, {
           songs: FieldValue.arrayUnion(finalSongId),
           updatedAt: FieldValue.serverTimestamp(),
-          size: FieldValue.increment(1)
+          size: FieldValue.increment(1),
         });
       }
     });
@@ -152,7 +153,7 @@ class SongService {
       console.error("Lỗi xóa file cũ:", error.message);
     }
 
-    return { message: "Cập nhật bài hát thành công!", success: true };
+    return {message: "Cập nhật bài hát thành công!", success: true};
   }
 
   async removeSong(id) {
@@ -163,13 +164,14 @@ class SongService {
     const db = admin.firestore();
     const songDocRef = db.collection("songs").doc(id);
 
-    let sourceDel = null, imageDel = null;
+    let sourceDel = null; let imageDel = null;
 
     await db.runTransaction(async (transaction) => {
       const songDocSnapshot = await transaction.get(songDocRef);
 
-      if (!songDocSnapshot.exists)
+      if (!songDocSnapshot.exists) {
         throw new Error("Nhạc không tồn tại");
+      }
 
       const album = songDocSnapshot.data().album || "";
       sourceDel = songDocSnapshot.data().source;
@@ -178,7 +180,7 @@ class SongService {
       let albumDocRef = null;
       if (album !== "") {
         const albumQuerySnapshot = await transaction.get(
-          db.collection("albums").where("name", "==", album).limit(1)
+            db.collection("albums").where("name", "==", album).limit(1),
         );
 
         if (!albumQuerySnapshot.empty) {
@@ -186,15 +188,15 @@ class SongService {
         }
       }
 
-      //remove song
+      // remove song
       transaction.delete(songDocRef);
 
-      //remove song trong album
+      // remove song trong album
       if (albumDocRef) {
         transaction.update(albumDocRef, {
           songs: FieldValue.arrayRemove(id),
           updatedAt: FieldValue.serverTimestamp(),
-          size: FieldValue.increment(-1)
+          size: FieldValue.increment(-1),
         });
       }
     });
@@ -207,7 +209,7 @@ class SongService {
       await Promise.allSettled(deleteTasks);
     }
 
-    return { success: true, message: "Xóa thành công" };
+    return {success: true, message: "Xóa thành công"};
   }
 
   async saveSong(payload) {
@@ -225,27 +227,27 @@ class SongService {
       replay,
       isVip,
       genre,
-      energy
+      energy,
     } = payload;
 
-    if (!title || typeof title !== 'string' || title.trim() === '') {
+    if (!title || typeof title !== "string" || title.trim() === "") {
       throw new Error("Tên bài hát (title) không được để trống");
     }
 
-    if (!album || typeof album !== 'string' || album.trim() === '') {
+    if (!album || typeof album !== "string" || album.trim() === "") {
       throw new Error("Tên album không được để trống");
     }
 
     const validGenres = Object.values(Genre);
     if (!genre || !validGenres.includes(genre.toUpperCase())) {
-      throw new Error(`Thể loại (genre) không hợp lệ. Danh sách hợp lệ: ${validGenres.join(', ')}`);
+      throw new Error(`Thể loại (genre) không hợp lệ. Danh sách hợp lệ: ${validGenres.join(", ")}`);
     }
 
     const db = admin.firestore();
 
-    const songRef = (id && id.trim() !== "")
-      ? db.collection("songs").doc(id)
-      : db.collection("songs").doc();
+    const songRef = (id && id.trim() !== "") ?
+      db.collection("songs").doc(id) :
+      db.collection("songs").doc();
 
     const finalSongId = songRef.id;
     const finalImage = await moveTempFileToDest(image, "songs/images", finalSongId);
@@ -265,15 +267,15 @@ class SongService {
       replay: Number(replay) || 0,
       isVip: Boolean(isVip),
       genre: genre.toUpperCase(),
-      energy: typeof energy === 'number' ? energy : 0.5,
-      createdAt: FieldValue.serverTimestamp()
+      energy: typeof energy === "number" ? energy : 0.5,
+      createdAt: FieldValue.serverTimestamp(),
     };
 
     await db.runTransaction(async (transaction) => {
       const albumQuery = db
-        .collection("albums")
-        .where("name", "==", songData.album)
-        .limit(1);
+          .collection("albums")
+          .where("name", "==", songData.album)
+          .limit(1);
       const albumSnap = await transaction.get(albumQuery);
 
       if (albumSnap.empty) {
@@ -283,9 +285,9 @@ class SongService {
       const albumDoc = albumSnap.docs[0];
       const albumRef = albumDoc.ref;
 
-      const newSongRef = (id && id.trim() !== "")
-        ? db.collection("songs").doc(id)
-        : db.collection("songs").doc();
+      const newSongRef = (id && id.trim() !== "") ?
+        db.collection("songs").doc(id) :
+        db.collection("songs").doc();
 
       const finalId = newSongRef.id;
       songData.id = finalId;
@@ -295,11 +297,11 @@ class SongService {
       transaction.update(albumRef, {
         songs: FieldValue.arrayUnion(finalId),
         updatedAt: FieldValue.serverTimestamp(),
-        size: FieldValue.increment(1)
+        size: FieldValue.increment(1),
       });
     });
 
-    return { message: "Tạo bài hát và cập nhật Album thành công!", success: true };
+    return {message: "Tạo bài hát và cập nhật Album thành công!", success: true};
   }
 }
 

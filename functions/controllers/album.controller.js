@@ -15,7 +15,7 @@ class AlbumController {
     } catch (error) {
       return res.status(500).json({
         message: error.message,
-        albums: []
+        albums: [],
       });
     }
   }
@@ -28,21 +28,21 @@ class AlbumController {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: `Lưu album thất bại: ${error.message}`
+        message: `Lưu album thất bại: ${error.message}`,
       });
     }
   }
 
   async deleteAlbum(req, res) {
     try {
-      const { id } = req.body;
+      const {id} = req.body;
       const result = await albumService.deleteAlbum(id);
 
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: `Xóa album thất bại: ${error.message}`
+        message: `Xóa album thất bại: ${error.message}`,
       });
     }
   }

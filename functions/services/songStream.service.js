@@ -1,14 +1,14 @@
-const admin = require('firebase-admin');
-const fs = require('fs');
-const { getUidFromHeader } = require('../utils/auth.util');
+const admin = require("firebase-admin");
+const fs = require("fs");
+const {getUidFromHeader} = require("../utils/auth.util");
 
 class SongStreamService {
-  async streamSong({ songId, req, res }) {
+  async streamSong({songId, req, res}) {
     const db = admin.firestore();
 
-    const songDoc = await db.collection('songs').doc(songId).get();
+    const songDoc = await db.collection("songs").doc(songId).get();
     if (!songDoc.exists) {
-      const error = new Error('Không tìm thấy bài hát!');
+      const error = new Error("Không tìm thấy bài hát!");
       error.statusCode = 404;
       throw error;
     }
@@ -19,14 +19,14 @@ class SongStreamService {
       const uid = await getUidFromHeader(req);
 
       if (!uid) {
-        const error = new Error('Bài hát VIP! Vui lòng đăng nhập để nghe.');
-        error.statusCode = 403;
+        const error = new Error("Bài hát VIP! Vui lòng đăng nhập để nghe.");
+        error.statusCode = 401;
         throw error;
       }
 
-      const userDoc = await db.collection('users').doc(uid).get();
+      const userDoc = await db.collection("users").doc(uid).get();
       if (!userDoc.exists) {
-        const error = new Error('Tài khoản người dùng không tồn tại!');
+        const error = new Error("Tài khoản người dùng không tồn tại!");
         error.statusCode = 403;
         throw error;
       }
@@ -42,13 +42,13 @@ class SongStreamService {
       }
 
       if (!isUserVip || isExpired) {
-        const error = new Error('Bài hát VIP! Bạn cần nâng cấp tài khoản VIP để nghe.');
+        const error = new Error("Bài hát VIP! Bạn cần nâng cấp tài khoản VIP để nghe.");
         error.statusCode = 403;
         throw error;
       }
     }
 
-    if (songData.source.startsWith('http://') || songData.source.startsWith('https://')) {
+    if (songData.source.startsWith("http://") || songData.source.startsWith("https://")) {
       return res.redirect(302, songData.source);
     }
 
@@ -57,7 +57,7 @@ class SongStreamService {
 
   _pipeAudioStream(filePath, req, res) {
     if (!filePath || !fs.existsSync(filePath)) {
-      return res.status(404).json({ message: 'File nhạc không tồn tại trên Server!' });
+      return res.status(404).json({message: "File nhạc không tồn tại trên Server!"});
     }
 
     const stat = fs.statSync(filePath);
@@ -65,25 +65,25 @@ class SongStreamService {
     const range = req.headers.range;
 
     if (range) {
-      const parts = range.replace(/bytes=/, '').split('-');
+      const parts = range.replace(/bytes=/, "").split("-");
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
       const chunkSize = end - start + 1;
 
-      const fileStream = fs.createReadStream(filePath, { start, end });
+      const fileStream = fs.createReadStream(filePath, {start, end});
       const headers = {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunkSize,
-        'Content-Type': 'audio/mpeg',
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunkSize,
+        "Content-Type": "audio/mpeg",
       };
 
       res.writeHead(206, headers);
       fileStream.pipe(res);
     } else {
       const headers = {
-        'Content-Length': fileSize,
-        'Content-Type': 'audio/mpeg',
+        "Content-Length": fileSize,
+        "Content-Type": "audio/mpeg",
       };
 
       res.writeHead(200, headers);

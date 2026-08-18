@@ -1,4 +1,4 @@
-const songService = require('../services/songStream.service');
+const songService = require("../services/songStream.service");
 
 class SonStreamgController {
   async streamSong(req, res) {
@@ -12,7 +12,7 @@ class SonStreamgController {
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({ message: error.message });
+      return res.status(statusCode).json({message: error.message});
     }
   }
 }

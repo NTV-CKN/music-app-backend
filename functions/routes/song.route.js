@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const songController = require("../controllers/song.controller");
-//authMiddleware
-const { authenticateToken, requireAdmin } = require("../authMiddleware");
+// authMiddleware
+const {authenticateToken, requireAdmin} = require("../authMiddleware");
 
 // Admin Song Routes with full endpoint paths
 router.get("/songs", authenticateToken, requireAdmin, songController.getSongsPaging);

@@ -10,14 +10,14 @@ class SubscriptionService {
       const strEndCode = query + "\uf8ff";
 
       subscriptionQuery = subscriptionQuery
-        .where("name", ">=", strFrontCode)
-        .where("name", "<=", strEndCode);
+          .where("name", ">=", strFrontCode)
+          .where("name", "<=", strEndCode);
     }
 
     const subscriptionSnap = await subscriptionQuery
-      .limit(limit)
-      .offset(offset)
-      .get();
+        .limit(limit)
+        .offset(offset)
+        .get();
 
     return subscriptionSnap.docs.map((subscription) => {
       const data = subscription.data();

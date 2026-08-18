@@ -15,7 +15,7 @@ class ArtistController {
     } catch (error) {
       return res.status(500).json({
         message: error.message,
-        artists: []
+        artists: [],
       });
     }
   }
@@ -28,21 +28,21 @@ class ArtistController {
     } catch (error) {
       return res.status(500).json({
         message: `Lưu nghệ sĩ thất bại: ${error.message}`,
-        success: false
+        success: false,
       });
     }
   }
 
   async deleteArtist(req, res) {
     try {
-      const { id } = req.body;
+      const {id} = req.body;
       const result = await artistService.deleteArtist(id);
 
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({
         message: `Xóa nghệ sĩ thất bại: ${error.message}`,
-        success: false
+        success: false,
       });
     }
   }

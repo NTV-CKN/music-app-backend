@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
-const { moveTempFileToDest, deleteFileFromStorage } = require("../admin/utilsStorage");
-const { FieldValue } = require("firebase-admin/firestore");
+const {moveTempFileToDest, deleteFileFromStorage} = require("../admin/utilsStorage");
+const {FieldValue} = require("firebase-admin/firestore");
 const Long = require("long");
 
 class ArtistService {
@@ -22,13 +22,13 @@ class ArtistService {
       .offset(offset)
       .get();
 
-    return artistsSnap.docs.map(artist => ({
+    return artistsSnap.docs.map((artist) => ({
       ...artist.data(),
     }));
   }
 
   async saveArtist(payload) {
-    const { id, name, avatar, amountInterested } = payload;
+    const {id, name, avatar, amountInterested} = payload;
 
     if (id === undefined || id === null || id === "") {
       throw new Error("Mã nghệ sĩ không hợp lệ");
@@ -46,7 +46,7 @@ class ArtistService {
 
     const artistIdLong = Long.fromValue(id);
     const artistIdNum = artistIdLong.toNumber();
-    let artistIdStr = String(artistIdNum);
+    const artistIdStr = String(artistIdNum);
 
     const finalAvatar = await moveTempFileToDest(avatar, "artists/avatar", artistIdStr);
 
@@ -62,7 +62,7 @@ class ArtistService {
         if (artistDocSnap.data().avatar !== finalAvatar) {
           oldAvatar = artistDocSnap.data().avatar;
         }
-        isSongsUpdate = artistDocSnap.data().name !== name
+        isSongsUpdate = artistDocSnap.data().name !== name;
 
         transaction.update(artistDocSnap.ref, {
           avatar: finalAvatar,
@@ -94,7 +94,7 @@ class ArtistService {
           const chunk = docs.slice(i, i + CHUNK_SIZE);
           const batch = db.batch();
 
-          chunk.forEach(songDoc => {
+          chunk.forEach((songDoc) => {
             batch.update(songDoc.ref, {
               artist: name,
               updatedAt: FieldValue.serverTimestamp()
@@ -110,7 +110,7 @@ class ArtistService {
       await deleteFileFromStorage(oldAvatar);
     }
 
-    return { message: "Lưu nghệ sĩ thành công", success: true };
+    return {message: "Lưu nghệ sĩ thành công", success: true};
   }
 
   async deleteArtist(id) {
@@ -147,7 +147,7 @@ class ArtistService {
         const chunk = docs.slice(i, i + CHUNK_SIZE);
         const batch = db.batch();
 
-        chunk.forEach(songDoc => {
+        chunk.forEach((songDoc) => {
           batch.update(
             songDoc.ref,
             {
@@ -171,7 +171,7 @@ class ArtistService {
       }
     }
 
-    return { message: "Xóa nghệ sĩ thành công", success: true };
+    return {message: "Xóa nghệ sĩ thành công", success: true};
   }
 }
 
