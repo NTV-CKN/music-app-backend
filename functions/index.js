@@ -20,6 +20,8 @@ const artistRoutes = require("./routes/artist.route");
 const subscriptionRoutes = require("./routes/subscription.route");
 const subscriptionPaymentRoutes = require("./routes/subscriptionPayment.route");
 
+const songStreamRoutes = require("./routes/songStream.route");
+
 const app = express();
 const adminRouter = express.Router();
 
@@ -37,5 +39,6 @@ adminRouter.use(subscriptionRoutes);
 
 app.use('/v1/admin', adminRouter);
 app.use('/v1', subscriptionPaymentRoutes);
+app.use('/v1', songStreamRoutes);
 
 exports.api = functions.https.onRequest(app);
