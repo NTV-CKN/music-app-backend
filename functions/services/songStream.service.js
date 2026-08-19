@@ -48,11 +48,79 @@ class SongStreamService {
       }
     }
 
-    if (songData.source.startsWith("http://") || songData.source.startsWith("https://")) {
+    if (songData.source.startsWith("https://thantrieu.com")) {
       return res.redirect(302, songData.source);
     }
 
+    if (songData.source.includes("storage.googleapis.com") ||
+      songData.source.includes("firebasestorage.googleapis.com") ||
+      !songData.source.startsWith("http")) {
+      const storagePath = this._extractStoragePath(songData.source);
+      return await this._pipeFirebaseStorageStream(storagePath, req, res);
+    }
+
     this._pipeAudioStream(songData.source, req, res);
+  }
+
+  _extractStoragePath(sourceUrl) {
+    if (!sourceUrl.startsWith("http")) return sourceUrl;
+
+    try {
+      const decodedUrl = decodeURIComponent(sourceUrl);
+      const firebaseMatch = decodedUrl.match(/\/o\/(.*?)\?/);
+      if (firebaseMatch && firebaseMatch[1]) return firebaseMatch[1];
+
+      const gcpMatch = decodedUrl.match(/storage\.googleapis\.com\/[^/]+\/(.+)/);
+      if (gcpMatch && gcpMatch[1]) return gcpMatch[1];
+    } catch (err) {
+      console.error("Lỗi parse Storage Path:", err);
+    }
+
+    return sourceUrl;
+  }
+
+  async _pipeFirebaseStorageStream(storagePath, req, res) {
+    try {
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(storagePath);
+
+      const [exists] = await file.exists();
+      if (!exists) {
+        return res.status(404).json({message: "File nhạc không tồn tại trên Storage!"});
+      }
+
+      const [metadata] = await file.getMetadata();
+      const fileSize = parseInt(metadata.size, 10);
+      const range = req.headers.range;
+
+      if (range) {
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunkSize = end - start + 1;
+
+        const headers = {
+          "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": chunkSize,
+          "Content-Type": metadata.contentType || "audio/mpeg",
+        };
+
+        res.writeHead(206, headers);
+        file.createReadStream({start, end}).pipe(res);
+      } else {
+        const headers = {
+          "Content-Length": fileSize,
+          "Content-Type": metadata.contentType || "audio/mpeg",
+        };
+
+        res.writeHead(200, headers);
+        file.createReadStream().pipe(res);
+      }
+    } catch (error) {
+      console.error("Lỗi pipe stream Storage:", error);
+      res.status(500).json({message: "Lỗi phát nhạc từ Storage!"});
+    }
   }
 
   _pipeAudioStream(filePath, req, res) {
