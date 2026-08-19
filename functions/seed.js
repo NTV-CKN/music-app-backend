@@ -10,6 +10,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1121429554.mp3",
       image: "https://thantrieu.com/resources/arts/1121429554.webp",
       duration: 224,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1130295694",
@@ -19,6 +22,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295694.mp3",
       image: "https://thantrieu.com/resources/arts/1130295694.webp",
       duration: 302,
+      isVip: false,
+      genre: "LOFI",
+      energy: 0.4,
     },
     {
       id: "1130295695",
@@ -28,6 +34,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295695.mp3",
       image: "https://thantrieu.com/resources/arts/1130295695.webp",
       duration: 224,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1130295696",
@@ -37,6 +46,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295696.mp3",
       image: "https://thantrieu.com/resources/arts/1130295696.webp",
       duration: 257,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1130295697",
@@ -46,6 +58,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295697.mp3",
       image: "https://thantrieu.com/resources/arts/1130295697.webp",
       duration: 199,
+      isVip: false,
+      genre: "REMIX",
+      energy: 0.6,
     },
     {
       id: "1130295698",
@@ -55,6 +70,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295698.mp3",
       image: "https://thantrieu.com/resources/arts/1130295698.webp",
       duration: 287,
+      isVip: false,
+      genre: "REMIX",
+      energy: 0.6,
     },
     {
       id: "1130295699",
@@ -64,6 +82,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295699.mp3",
       image: "https://thantrieu.com/resources/arts/1130295699.webp",
       duration: 284,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1130295700",
@@ -73,6 +94,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295700.mp3",
       image: "https://thantrieu.com/resources/arts/1130295700.webp",
       duration: 257,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1130295701",
@@ -82,6 +106,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295701.mp3",
       image: "https://thantrieu.com/resources/arts/1130295701.webp",
       duration: 368,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.5,
     },
     {
       id: "1130295702",
@@ -91,6 +118,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295702.mp3",
       image: "https://thantrieu.com/resources/arts/1130295702.webp",
       duration: 285,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1130295703",
@@ -100,6 +130,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295703.mp3",
       image: "https://thantrieu.com/resources/arts/1130295703.webp",
       duration: 320,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1130295704",
@@ -109,6 +142,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295704.mp3",
       image: "https://thantrieu.com/resources/arts/1130295704.webp",
       duration: 235,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1130295705",
@@ -118,6 +154,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1130295705.mp3",
       image: "https://thantrieu.com/resources/arts/1130295705.webp",
       duration: 335,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1073419268",
@@ -127,6 +166,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1073419268.mp3",
       image: "https://thantrieu.com/resources/arts/1073419268.webp",
       duration: 232,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1073850016",
@@ -136,6 +178,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1073850016.mp3",
       image: "https://thantrieu.com/resources/arts/1073850016.webp",
       duration: 323,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1073969323",
@@ -145,6 +190,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1073969323.mp3",
       image: "https://thantrieu.com/resources/arts/1073969323.webp",
       duration: 307,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1073969708",
@@ -154,6 +202,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1073969708.mp3",
       image: "https://thantrieu.com/resources/arts/1073969708.webp",
       duration: 262,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074183664",
@@ -163,6 +214,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074183664.mp3",
       image: "https://thantrieu.com/resources/arts/1074183664.webp",
       duration: 258,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1074241673",
@@ -172,6 +226,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074241673.mp3",
       image: "https://thantrieu.com/resources/arts/1074241673.webp",
       duration: 286,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074276774",
@@ -181,6 +238,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074276774.mp3",
       image: "https://thantrieu.com/resources/arts/1074276774.webp",
       duration: 287,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1074344478",
@@ -190,6 +250,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074344478.mp3",
       image: "https://thantrieu.com/resources/arts/1074241673.webp",
       duration: 324,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074412087",
@@ -199,6 +262,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074412087.mp3",
       image: "https://thantrieu.com/resources/arts/1074241673.webp",
       duration: 269,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074700719",
@@ -208,6 +274,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074700719.mp3",
       image: "https://thantrieu.com/resources/arts/1074241673.webp",
       duration: 259,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074592745",
@@ -217,6 +286,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074592745.mp3",
       image: "https://thantrieu.com/resources/arts/1074183664.webp",
       duration: 236,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1074748272",
@@ -226,6 +298,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074748272.mp3",
       image: "https://thantrieu.com/resources/arts/1074748272.webp",
       duration: 264,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074793765",
@@ -235,6 +310,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074793765.mp3",
       image: "https://thantrieu.com/resources/arts/1074793765.webp",
       duration: 252,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1074869263",
@@ -244,6 +322,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074869263.mp3",
       image: "https://thantrieu.com/resources/arts/1074869263.webp",
       duration: 265,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1074872458",
@@ -253,6 +334,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074872458.mp3",
       image: "https://thantrieu.com/resources/arts/1074872458.webp",
       duration: 287,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1074952862",
@@ -262,6 +346,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074952862.mp3",
       image: "https://thantrieu.com/resources/arts/1074952862.webp",
       duration: 291,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1074959659",
@@ -271,6 +358,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1074959659.mp3",
       image: "https://thantrieu.com/resources/arts/1074959659.webp",
       duration: 348,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1075065818",
@@ -280,6 +370,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075065818.mp3",
       image: "https://thantrieu.com/resources/arts/1075065818.webp",
       duration: 270,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075096420",
@@ -289,6 +382,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075096420.mp3",
       image: "https://thantrieu.com/resources/arts/1075096420.webp",
       duration: 230,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075144767",
@@ -298,6 +394,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075144767.mp3",
       image: "https://thantrieu.com/resources/arts/1075144767.webp",
       duration: 274,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075144768",
@@ -307,6 +406,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075144768.mp3",
       image: "https://thantrieu.com/resources/arts/1075144767.webp",
       duration: 274,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075144769",
@@ -316,6 +418,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075144769.mp3",
       image: "https://thantrieu.com/resources/arts/1075144767.webp",
       duration: 254,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075170082",
@@ -325,6 +430,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075170082.mp3",
       image: "https://thantrieu.com/resources/arts/1075170082.webp",
       duration: 326,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075170083",
@@ -334,6 +442,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075170083.mp3",
       image: "https://thantrieu.com/resources/arts/1075170082.webp",
       duration: 222,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075170084",
@@ -343,6 +454,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075170084.mp3",
       image: "https://thantrieu.com/resources/arts/1075170082.webp",
       duration: 232,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075251906",
@@ -352,6 +466,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075251906.mp3",
       image: "https://thantrieu.com/resources/arts/1075251906.webp",
       duration: 245,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075363470",
@@ -361,6 +478,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075363470.mp3",
       image: "https://thantrieu.com/resources/arts/1075363470.webp",
       duration: 297,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075365502",
@@ -370,6 +490,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075365502.mp3",
       image: "https://thantrieu.com/resources/arts/1075365502.webp",
       duration: 275,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075398749",
@@ -379,6 +502,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075398749.mp3",
       image: "https://thantrieu.com/resources/arts/1075398749.webp",
       duration: 230,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075399196",
@@ -388,6 +514,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075399196.mp3",
       image: "https://thantrieu.com/resources/arts/1075399196.webp",
       duration: 394,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075415770",
@@ -397,6 +526,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075415770.mp3",
       image: "https://thantrieu.com/resources/arts/1075415770.webp",
       duration: 297,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075423818",
@@ -406,6 +538,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075423818.mp3",
       image: "https://thantrieu.com/resources/arts/1075399196.webp",
       duration: 322,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075429010",
@@ -415,6 +550,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075429010.mp3",
       image: "https://thantrieu.com/resources/arts/1075398749.webp",
       duration: 203,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075435155",
@@ -424,6 +562,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075435155.mp3",
       image: "https://thantrieu.com/resources/arts/1075415770.webp",
       duration: 333,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075475120",
@@ -433,6 +574,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075475120.mp3",
       image: "https://thantrieu.com/resources/arts/1075415770.webp",
       duration: 267,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1075525434",
@@ -442,6 +586,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075525434.mp3",
       image: "https://thantrieu.com/resources/arts/1075525434.png",
       duration: 319,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1075536512",
@@ -451,6 +598,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075536512.mp3",
       image: "https://thantrieu.com/resources/arts/1075536512.webp",
       duration: 267,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1075787606",
@@ -460,6 +610,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1075787606.mp3",
       image: "https://thantrieu.com/resources/arts/1078153801.png",
       duration: 319,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1076249352",
@@ -469,6 +622,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1076249352.mp3",
       image: "https://thantrieu.com/resources/arts/1076249352.webp",
       duration: 318,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1076431972",
@@ -478,6 +634,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1076431972.mp3",
       image: "https://thantrieu.com/resources/arts/1078153801.webp",
       duration: 310,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078153801",
@@ -487,6 +646,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078153801.mp3",
       image: "https://thantrieu.com/resources/arts/1078153801.webp",
       duration: 257,
+      isVip: false,
+      genre: "REMIX",
+      energy: 0.6,
     },
     {
       id: "1078153803",
@@ -496,6 +658,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078153803.mp3",
       image: "https://thantrieu.com/resources/arts/1078153801.webp",
       duration: 296,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078168375",
@@ -505,6 +670,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078168375.mp3",
       image: "https://thantrieu.com/resources/arts/1078153801.webp",
       duration: 253,
+      isVip: false,
+      genre: "REMIX",
+      energy: 0.6,
     },
     {
       id: "1078009835",
@@ -514,6 +682,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078009835.mp3",
       image: "https://thantrieu.com/resources/arts/1078009835.webp",
       duration: 271,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.3,
     },
     {
       id: "1078245006",
@@ -523,6 +694,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245006.mp3",
       image: "https://thantrieu.com/resources/arts/1078245006.webp",
       duration: 319,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1078245007",
@@ -532,6 +706,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245007.mp3",
       image: "https://thantrieu.com/resources/arts/1078245007.webp",
       duration: 170,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245008",
@@ -541,6 +718,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245008.mp3",
       image: "https://thantrieu.com/resources/arts/1078245008.webp",
       duration: 257,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245009",
@@ -550,6 +730,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245009.mp3",
       image: "https://thantrieu.com/resources/arts/1078245009.webp",
       duration: 240,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245010",
@@ -559,6 +742,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245010.mp3",
       image: "https://thantrieu.com/resources/arts/1078245010.webp",
       duration: 236,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245011",
@@ -568,6 +754,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245011.mp3",
       image: "https://thantrieu.com/resources/arts/1078245011.webp",
       duration: 246,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245012",
@@ -577,6 +766,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245012.mp3",
       image: "https://thantrieu.com/resources/arts/1078245012.webp",
       duration: 270,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245013",
@@ -586,6 +778,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245013.mp3",
       image: "https://thantrieu.com/resources/arts/1078245013.webp",
       duration: 275,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245014",
@@ -595,6 +790,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245014.mp3",
       image: "https://thantrieu.com/resources/arts/1078245014.webp",
       duration: 235,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245015",
@@ -604,6 +802,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245015.mp3",
       image: "https://thantrieu.com/resources/arts/1078245015.webp",
       duration: 318,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1078245016",
@@ -613,6 +814,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245016.mp3",
       image: "https://thantrieu.com/resources/arts/1078245016.webp",
       duration: 267,
+      isVip: false,
+      genre: "INDIE",
+      energy: 0.4,
     },
     {
       id: "1078245017",
@@ -622,6 +826,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245017.mp3",
       image: "https://thantrieu.com/resources/arts/1078245017.webp",
       duration: 185,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.7,
     },
     {
       id: "1078245018",
@@ -631,6 +838,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245018.mp3",
       image: "https://thantrieu.com/resources/arts/1078245018.webp",
       duration: 270,
+      isVip: false,
+      genre: "POP",
+      energy: 0.7,
     },
     {
       id: "1078245019",
@@ -640,6 +850,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245019.mp3",
       image: "https://thantrieu.com/resources/arts/1078245019.webp",
       duration: 288,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245020",
@@ -649,6 +862,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245020.mp3",
       image: "https://thantrieu.com/resources/arts/1078245020.webp",
       duration: 240,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245021",
@@ -658,6 +874,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245021.mp3",
       image: "https://thantrieu.com/resources/arts/1078245021.webp",
       duration: 347,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245022",
@@ -667,6 +886,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245022.mp3",
       image: "https://thantrieu.com/resources/arts/1078245022.webp",
       duration: 279,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245023",
@@ -676,6 +898,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245023.mp3",
       image: "https://thantrieu.com/resources/arts/1078245023.webp",
       duration: 346,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245024",
@@ -685,6 +910,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245024.mp3",
       image: "https://thantrieu.com/resources/arts/1078245024.webp",
       duration: 261,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245025",
@@ -694,6 +922,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245025.mp3",
       image: "https://thantrieu.com/resources/arts/1078245025.webp",
       duration: 302,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245026",
@@ -703,6 +934,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245026.mp3",
       image: "https://thantrieu.com/resources/arts/1078245026.webp",
       duration: 272,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245027",
@@ -712,6 +946,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245027.mp3",
       image: "https://thantrieu.com/resources/arts/1078245027.webp",
       duration: 236,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245028",
@@ -721,6 +958,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245028.mp3",
       image: "https://thantrieu.com/resources/arts/1078245028.webp",
       duration: 158,
+      isVip: false,
+      genre: "EDM_DANCE",
+      energy: 0.8,
     },
     {
       id: "1078245029",
@@ -730,6 +970,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245029.mp3",
       image: "https://thantrieu.com/resources/arts/1078245029.webp",
       duration: 304,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245030",
@@ -739,6 +982,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245030.mp3",
       image: "https://thantrieu.com/resources/arts/1078245030.webp",
       duration: 253,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245031",
@@ -748,6 +994,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245031.mp3",
       image: "https://thantrieu.com/resources/arts/1078245031.webp",
       duration: 156,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245032",
@@ -757,6 +1006,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245032.mp3",
       image: "https://thantrieu.com/resources/arts/1078245032.webp",
       duration: 208,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.5,
     },
     {
       id: "1078245033",
@@ -766,6 +1018,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245033.mp3",
       image: "https://thantrieu.com/resources/arts/1078245033.webp",
       duration: 226,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245034",
@@ -775,6 +1030,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245034.mp3",
       image: "https://thantrieu.com/resources/arts/1078245034.webp",
       duration: 215,
+      isVip: false,
+      genre: "POP",
+      energy: 0.7,
     },
     {
       id: "1078245035",
@@ -784,6 +1042,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245035.mp3",
       image: "https://thantrieu.com/resources/arts/1078245035.webp",
       duration: 185,
+      isVip: false,
+      genre: "EDM_DANCE",
+      energy: 0.8,
     },
     {
       id: "1078245036",
@@ -793,6 +1054,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245036.mp3",
       image: "https://thantrieu.com/resources/arts/1078245036.webp",
       duration: 206,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245037",
@@ -802,6 +1066,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245037.mp3",
       image: "https://thantrieu.com/resources/arts/1078245037.webp",
       duration: 165,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245038",
@@ -811,6 +1078,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245038.mp3",
       image: "https://thantrieu.com/resources/arts/1078245038.webp",
       duration: 202,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.7,
     },
     {
       id: "1078245039",
@@ -820,6 +1090,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245039.mp3",
       image: "https://thantrieu.com/resources/arts/1078245039.webp",
       duration: 184,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245040",
@@ -829,6 +1102,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245040.mp3",
       image: "https://thantrieu.com/resources/arts/1078245040.webp",
       duration: 230,
+      isVip: false,
+      genre: "ROCK",
+      energy: 0.7,
     },
     {
       id: "1078245041",
@@ -838,6 +1114,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245041.mp3",
       image: "https://thantrieu.com/resources/arts/1078245041.webp",
       duration: 191,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245042",
@@ -847,6 +1126,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245042.mp3",
       image: "https://thantrieu.com/resources/arts/1078245042.webp",
       duration: 271,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245043",
@@ -856,6 +1138,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245043.mp3",
       image: "https://thantrieu.com/resources/arts/1078245043.webp",
       duration: 218,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245044",
@@ -865,6 +1150,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245044.mp3",
       image: "https://thantrieu.com/resources/arts/1078245044.webp",
       duration: 211,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245045",
@@ -874,6 +1162,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245045.mp3",
       image: "https://thantrieu.com/resources/arts/1078245045.webp",
       duration: 308,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245046",
@@ -883,6 +1174,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245046.mp3",
       image: "https://thantrieu.com/resources/arts/1078245046.webp",
       duration: 287,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245047",
@@ -892,6 +1186,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245047.mp3",
       image: "https://thantrieu.com/resources/arts/1078245047.webp",
       duration: 255,
+      isVip: false,
+      genre: "INDIE",
+      energy: 0.4,
     },
     {
       id: "1078245048",
@@ -901,6 +1198,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245048.mp3",
       image: "https://thantrieu.com/resources/arts/1078245048.webp",
       duration: 298,
+      isVip: false,
+      genre: "INDIE",
+      energy: 0.4,
     },
     {
       id: "1078245049",
@@ -910,6 +1210,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245049.mp3",
       image: "https://thantrieu.com/resources/arts/1078245049.webp",
       duration: 284,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245050",
@@ -919,6 +1222,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245050.mp3",
       image: "https://thantrieu.com/resources/arts/1078245050.webp",
       duration: 249,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245051",
@@ -928,6 +1234,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245051.mp3",
       image: "https://thantrieu.com/resources/arts/1078245051.webp",
       duration: 248,
+      isVip: false,
+      genre: "EDM_DANCE",
+      energy: 0.7,
     },
     {
       id: "1078245052",
@@ -937,6 +1246,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245052.mp3",
       image: "https://thantrieu.com/resources/arts/1078245052.webp",
       duration: 167,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245053",
@@ -946,6 +1258,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245053.mp3",
       image: "https://thantrieu.com/resources/arts/1078245053.webp",
       duration: 187,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245054",
@@ -955,6 +1270,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245054.mp3",
       image: "https://thantrieu.com/resources/arts/1078245054.webp",
       duration: 187,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245055",
@@ -964,6 +1282,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/arts/1078245055.webp",
       image: "https://thantrieu.com/resources/arts/1078245055.webp",
       duration: 231,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245056",
@@ -973,6 +1294,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245056.mp3",
       image: "https://thantrieu.com/resources/arts/1078245056.webp",
       duration: 292,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245057",
@@ -982,6 +1306,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245057.mp3",
       image: "https://thantrieu.com/resources/arts/1078245057.webp",
       duration: 332,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245058",
@@ -991,6 +1318,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245058.mp3",
       image: "https://thantrieu.com/resources/arts/1078245058.webp",
       duration: 164,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245059",
@@ -1000,6 +1330,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245059.mp3",
       image: "https://thantrieu.com/resources/arts/1078245059.webp",
       duration: 248,
+      isVip: false,
+      genre: "HIPHOP_RAP",
+      energy: 0.6,
     },
     {
       id: "1078245060",
@@ -1009,6 +1342,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245060.mp3",
       image: "https://thantrieu.com/resources/arts/1078245060.webp",
       duration: 284,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245061",
@@ -1018,6 +1354,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245061.mp3",
       image: "https://thantrieu.com/resources/arts/1078245061.webp",
       duration: 263,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245062",
@@ -1027,6 +1366,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245062.mp3",
       image: "https://thantrieu.com/resources/arts/1078245062.webp",
       duration: 239,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245063",
@@ -1036,6 +1378,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245063.mp3",
       image: "https://thantrieu.com/resources/arts/1078245063.webp",
       duration: 273,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
     {
       id: "1078245064",
@@ -1045,6 +1390,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245064.mp3",
       image: "https://thantrieu.com/resources/arts/1078245064.webp",
       duration: 273,
+      isVip: false,
+      genre: "BOLERO",
+      energy: 0.4,
     },
     {
       id: "1078245065",
@@ -1054,6 +1402,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245065.mp3",
       image: "https://thantrieu.com/resources/arts/1078245065.webp",
       duration: 211,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245066",
@@ -1063,6 +1414,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245066.mp3",
       image: "https://thantrieu.com/resources/arts/1078245066.webp",
       duration: 272,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1078245067",
@@ -1072,6 +1426,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245067.mp3",
       image: "https://thantrieu.com/resources/arts/1078245067.webp",
       duration: 387,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.3,
     },
     {
       id: "1078245068",
@@ -1081,6 +1438,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245068.mp3",
       image: "https://thantrieu.com/resources/arts/1078245068.webp",
       duration: 221,
+      isVip: false,
+      genre: "POP",
+      energy: 0.5,
     },
     {
       id: "1078245069",
@@ -1090,6 +1450,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245069.mp3",
       image: "https://thantrieu.com/resources/arts/1078245069.webp",
       duration: 214,
+      isVip: false,
+      genre: "POP",
+      energy: 0.6,
     },
     {
       id: "1078245070",
@@ -1099,6 +1462,9 @@ const seedData = {
       source: "https://thantrieu.com/resources/music/1078245070.mp3",
       image: "https://thantrieu.com/resources/arts/1078245070.webp",
       duration: 250,
+      isVip: false,
+      genre: "BALLAD",
+      energy: 0.4,
     },
   ],
 };
