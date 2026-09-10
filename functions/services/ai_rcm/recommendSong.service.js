@@ -1,26 +1,26 @@
 const admin = require("firebase-admin");
-const { GoogleGenAI, Type } = require("@google/genai");
+const {GoogleGenAI, Type} = require("@google/genai");
+const {Genre} = require("../../genreSong");
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 
-const searchSongsInDatabase = "searchSongsInDatabase";
+const supportedGenres = Object.values(Genre);
 
-//Mô tả function
-const searchSongsDeclaration = {
-    name: searchSongsInDatabase,
-    description: "Tìm kiếm danh sách bài hát trong Firestore dựa theo thể loại (genre) và chỉ số năng lượng (energy).",
-    parameters: {
-        type: Type.OBJECT,
-        properties: {
-            genre: {
-                type: Type.STRING, description: `Chỉ nhận đúng 1 trong các thể loại: BALLAD | LOFI
-         | ACOUSTIC | POP | INDIE | HIPHOP_RAP | EDM_DANCE | REMIX | ROCK | BOLERO. Nếu người dùng không nêu 
-         rõ nhưng có thể suy ra thể loại phù hợp thì phải map về 1 trong các giá trị trên.` },
-            minEnergy: { type: Type.NUMBER, description: "Mức năng lượng tối thiểu (0.0 - 1.0)" },
-            maxEnergy: { type: Type.NUMBER, description: "Mức năng lượng tối đa (0.0 - 1.0)" },
-            limit: { type: Type.NUMBER, description: "Số lượng bài hát tối đa lấy ra từ DB (mặc định 20 - Tối đa 50)" }
-        }
-    }
+const unsupportedMessage = "Tôi chưa có đủ thông tin để tìm bài hát phù hợp. " +
+    "Bạn hãy nhập một thể loại trong danh sách được hỗ trợ hoặc mô tả rõ tâm trạng của bạn.";
+
+const analysisSchema = {
+    type: Type.OBJECT,
+    properties: {
+        supported: {type: Type.BOOLEAN},
+        intent: {type: Type.STRING, enum: ["GENRE", "MOOD", "UNSUPPORTED"]},
+        genre: {type: Type.STRING},
+        minEnergy: {type: Type.NUMBER},
+        maxEnergy: {type: Type.NUMBER},
+        confidence: {type: Type.NUMBER},
+        evidence: {type: Type.STRING}
+    },
+    required: ["supported", "intent", "genre", "minEnergy", "maxEnergy", "confidence", "evidence"]
 };
 
 //Structured Output
@@ -30,8 +30,9 @@ const recommendationSchema = {
         aiMessage: {
             type: Type.STRING,
             description: `Lời nhắn an ủi, động viên hoặc chúc mừng ngắn gọn (1-2 câu) dựa theo mood của user.
-      Trong trường hợp không tìm thấy bất kì bài hát nào phù hợp hoặc câu lệnh người dùng không phù hợp với chức
-      năng tìm bài hát theo tâm trạng thì hãy bảo thử lại.`
+      Trong trường hợp không tìm thấy bất kì bài hát nào phù hợp hoặc dữ liệu của các bài hát không có
+       hoặc câu lệnh người dùng không phù hợp với chức năng tìm bài hát theo
+        tâm trạng thì hãy bảo người dùng nhập lại theo chủ đề tâm trạng.`
         },
         promptSummary: {
             type: Type.STRING,
@@ -39,7 +40,7 @@ const recommendationSchema = {
         },
         recommendedSongIds: {
             type: Type.ARRAY,
-            items: { type: Type.STRING },
+            items: {type: Type.STRING},
             description: "Mảng chứa tối đa 10 songId phù hợp nhất. Nếu không có bất kì songId nào thì để rỗng"
         }
     },
@@ -47,15 +48,35 @@ const recommendationSchema = {
 };
 
 class AIRecommendationService {
-    async _searchSongsInDatabase({ genre, minEnergy, maxEnergy, limit = 20 }) {
+    async callWithRetry(fn, retries = 3, delay = 1000) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                return await fn();
+            } catch (error) {
+                if (error.message?.includes("high demand") || error.status === 503) {
+                    if (i === retries - 1) throw error;
+                    await new Promise((res) => setTimeout(res, delay * (i + 1)));
+                } else {
+                    throw error;
+                }
+            }
+        }
+    }
+
+    async _searchSongsInDatabase({genre, minEnergy, maxEnergy, limit = 20}) {
         try {
             const songsRef = admin.firestore().collection("songs");
-            const songsSnapshot = await songsRef
-                .where("genre", "==", genre)
-                .where("energy", ">=", minEnergy)
-                .where("energy", "<=", maxEnergy)
-                .limit(limit)
-                .get();
+            let songsQuery = songsRef;
+
+            if (genre) songsQuery = songsQuery.where("genre", "==", genre);
+            if (typeof minEnergy === "number") {
+                songsQuery = songsQuery.where("energy", ">=", minEnergy);
+            }
+            if (typeof maxEnergy === "number") {
+                songsQuery = songsQuery.where("energy", "<=", maxEnergy);
+            }
+
+            const songsSnapshot = await songsQuery.limit(limit).get();
 
             return songsSnapshot.docs.map((songSnap) => {
                 const data = songSnap.data();
@@ -68,109 +89,140 @@ class AIRecommendationService {
                 };
             });
         } catch (error) {
+            console.log(error);
+
             return {
                 err: error.message
             };
         }
     }
 
+    async _analyzePrompt(userPrompt) {
+        const analysisInstruction = `Bạn là bộ phân tích đầu vào cho hệ thống gợi ý nhạc.
+        Chỉ đánh dấu supported=true khi câu người dùng có căn cứ rõ ràng để tìm nhạc.
+        Có hai trường hợp hợp lệ:
+        1. GENRE: người dùng nêu thể loại hoặc từ đồng nghĩa gần nghĩa rõ ràng. Map về đúng một giá trị:
+        ${supportedGenres.join(", ")}.
+        2. MOOD: người dùng mô tả cảm xúc/tâm trạng có thể suy ra mức năng lượng.
+        Quy đổi minEnergy và maxEnergy trong khoảng 0 đến 1.
+        Ví dụ vui/sôi động -> năng lượng cao; buồn/chia tay -> thấp; vô vị/nhàm chán -> thấp đến trung bình.
+        Không được tự bịa căn cứ từ câu nói mơ hồ, quảng cáo, câu hỏi ngoài chủ đề hoặc nội dung không liên quan.
+        Khi không đủ căn cứ: supported=false, intent=UNSUPPORTED, genre="", evidence="".
+        evidence phải trích dẫn ngắn gọn từ chính câu người dùng, không được bịa thêm.`;
+
+        const response = await this.callWithRetry(() => ai.models.generateContent({
+            model: process.env.MODEL_AI,
+            contents: [{role: "user", parts: [{text: userPrompt}]}],
+            config: {
+                systemInstruction: analysisInstruction,
+                responseMimeType: "application/json",
+                responseSchema: analysisSchema,
+                temperature: 0
+            }
+        }));
+
+        return JSON.parse(response.text);
+    }
+
+    _validateAnalysis(analysis) {
+        if (!analysis || analysis.supported !== true ||
+            !["GENRE", "MOOD"].includes(analysis.intent) ||
+            Number(analysis.confidence) < 0.65 ||
+            typeof analysis.evidence !== "string" || !analysis.evidence.trim()) {
+            return false;
+        }
+
+        const minEnergy = Number(analysis.minEnergy);
+        const maxEnergy = Number(analysis.maxEnergy);
+        if (!Number.isFinite(minEnergy) || !Number.isFinite(maxEnergy) ||
+            minEnergy < 0 || maxEnergy > 1 || minEnergy > maxEnergy) {
+            return false;
+        }
+
+        if (analysis.intent === "GENRE" && !supportedGenres.includes(analysis.genre)) {
+            return false;
+        }
+
+        if (analysis.intent === "MOOD" && analysis.genre &&
+            !supportedGenres.includes(analysis.genre)) {
+            return false;
+        }
+
+        return true;
+    }
+
     async getAIHomeRecommendation(userPrompt) {
         try {
-            if (!userPrompt) throw new Error("Vui lòng viết lệnh");
+            if (typeof userPrompt !== "string" || !userPrompt.trim()) {
+                return {
+                    aiMessage: "Vui lòng mô tả thể loại hoặc tâm trạng bạn muốn nghe.",
+                    promptSummary: "",
+                    songs: []
+                };
+            }
 
             const systemInstruction = `Bạn là trợ lý âm nhạc AI thông minh của Nguyễn Trường Vũ.
-                Nhiệm vụ:
-                1. Phân tích tâm trạng/yêu cầu của người dùng.
-                2. BẮT BUỘC gọi tool 'searchSongsInDatabase' để tìm các bài hát ứng viên trong DB.
-                3. Dựa trên danh sách nhận được từ tool, chọn tối đa 10 bài phù hợp nhất và trả về 
-                JSON đúng cấu trúc yêu cầu.`;
+                Chỉ chọn bài hát từ danh sách ứng viên được cung cấp, không được tự bịa songId.
+                Nếu danh sách rỗng, phải nói rõ không tìm thấy bài phù hợp.`;
 
-            const contents = [{ role: "user", parts: [{ text: userPrompt }] }];
+            const analysis = await this._analyzePrompt(userPrompt.trim());
+            if (!this._validateAnalysis(analysis)) {
+                return {aiMessage: unsupportedMessage, promptSummary: "", songs: []};
+            }
 
-            //Tạo yêu cầu cho AI phân tích + yêu cầu gọi hàm
-            let response = await ai.models.generateContent({
+            const toolArgs = {
+                genre: analysis.genre || "",
+                minEnergy: Number(analysis.minEnergy),
+                maxEnergy: Number(analysis.maxEnergy),
+                limit: 20
+            };
+            const toolResult = await this._searchSongsInDatabase(toolArgs);
+            if (!Array.isArray(toolResult) || toolResult.length === 0) {
+                return {
+                    aiMessage: "Không tìm thấy bài hát phù hợp với yêu cầu này.",
+                    promptSummary: analysis.evidence,
+                    songs: []
+                };
+            }
+
+            const response = await this.callWithRetry(() => ai.models.generateContent({
                 model: process.env.MODEL_AI,
-                contents: contents,
+                contents: [{
+                    role: "user",
+                    parts: [{text: JSON.stringify({userPrompt, analysis, candidates: toolResult})}]
+                }],
                 config: {
                     systemInstruction,
-                    tools: [{ functionDeclarations: [searchSongsDeclaration] }]
+                    responseMimeType: "application/json",
+                    responseSchema: recommendationSchema,
+                    temperature: 0
                 }
-            });
-
-            //Kiểm tra và lấy các args để tiến hành gọi hàm bóc tách dữ liệu
-            const functionCalls = response.functionCalls;
-            if (functionCalls && functionCalls.length > 0) {
-                const call = functionCalls[0];
-
-                if (call.name === searchSongsInDatabase) {
-                    const toolResult = await this._searchSongsInDatabase(call.args);
-
-                    //Bổ sung ngữ cảnh cho lần gọi tiếp theo
-                    contents.push(response.candidates[0].content);
-                    contents.push({
-                        role: "user",
-                        parts: [{
-                            functionResponse: {
-                                name: "searchSongsInDatabase",
-                                response: { result: toolResult }
-                            }
-                        }]
-                    });
-
-                    //Sau khi chạy lần đầu, tiến hành yêu cầu AI trích xuất để trả kết quả
-                    response = await ai.models.generateContent({
-                        model: process.env.MODEL_AI,
-                        contents: contents,
-                        config: {
-                            systemInstruction,
-                            responseMimeType: "application/json",
-                            responseSchema: recommendationSchema
-                        }
-                    });
-                } else {
-                    response = await ai.models.generateContent({
-                        model: process.env.MODEL_AI,
-                        contents: contents,
-                        config: {
-                            systemInstruction,
-                            responseMimeType: "application/json",
-                            responseSchema: recommendationSchema
-                        }
-                    });
-                }
-            }
+            }));
 
             const parsedResult = JSON.parse(response.text);
 
-            //Lấy ra các song data từ songIds
-            let fullSongs = [];
-            const songIds = parsedResult.recommendedSongIds || [];
-
-            if (songIds.length > 0) {
-                const songsSnap = await admin.firestore()
-                    .collection("songs")
-                    .where("id", "in", songIds)
-                    .get();
-
-                const songMap = new Map();
-                songsSnap.docs.forEach((doc) => {
-                    songMap.set(doc.id, { ...doc.data() });
-                });
-
-                fullSongs = songIds.map((id) => songMap.get(id)).filter(Boolean);
-            }
-
-            console.log("sss", songIds);
+            const candidateMap = new Map(toolResult.map((song) => [song.songId, song]));
+            const songIds = Array.isArray(parsedResult.recommendedSongIds) ?
+                parsedResult.recommendedSongIds : [];
+            const fullSongs = songIds.map((id) => candidateMap.get(id)).filter(Boolean);
 
             //Trả về structured output
             return {
-                aiMessage: parsedResult.aiMessage,
-                promptSummary: parsedResult.promptSummary,
+                aiMessage: parsedResult.aiMessage || "Đây là những bài hát phù hợp với bạn.",
+                promptSummary: parsedResult.promptSummary || analysis.evidence,
                 songs: fullSongs
             };
         } catch (error) {
+            console.error("Lỗi getAIHomeRecommendation:", error.message, error);
+
+            const isOverload = error.status === 503 ||
+                error.message?.includes("high demand") ||
+                error.message?.includes("overloaded");
+
             return {
-                aiMessage: error.message,
+                aiMessage: isOverload ?
+                    "Hệ thống AI đang quá tải, vui lòng thử lại sau ít phút." :
+                    "Có lỗi xảy ra, vui lòng thử lại.",
                 promptSummary: "",
                 songs: []
             };
