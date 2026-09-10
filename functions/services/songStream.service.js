@@ -1,10 +1,10 @@
 const admin = require("firebase-admin");
 const fs = require("fs");
-const { getUidFromHeader } = require("../utils/auth.util");
+const {getUidFromHeader} = require("../utils/auth.util");
 const {FieldValue} = require("firebase-admin/firestore");
 
 class SongStreamService {
-  async streamSong({ songId, req, res }) {
+  async streamSong({songId, req, res}) {
     const db = admin.firestore();
 
     const songDoc = await db.collection("songs").doc(songId).get();
@@ -97,7 +97,7 @@ class SongStreamService {
 
       const [exists] = await file.exists();
       if (!exists) {
-        return res.status(404).json({ message: "File nhạc không tồn tại trên Storage!" });
+        return res.status(404).json({message: "File nhạc không tồn tại trên Storage!"});
       }
 
       const [metadata] = await file.getMetadata();
@@ -118,7 +118,7 @@ class SongStreamService {
         };
 
         res.writeHead(206, headers);
-        file.createReadStream({ start, end }).pipe(res);
+        file.createReadStream({start, end}).pipe(res);
       } else {
         const headers = {
           "Content-Length": fileSize,
@@ -130,13 +130,13 @@ class SongStreamService {
       }
     } catch (error) {
       console.error("Lỗi pipe stream Storage:", error);
-      res.status(500).json({ message: "Lỗi phát nhạc từ Storage!" });
+      res.status(500).json({message: "Lỗi phát nhạc từ Storage!"});
     }
   }
 
   _pipeAudioStream(filePath, req, res) {
     if (!filePath || !fs.existsSync(filePath)) {
-      return res.status(404).json({ message: "File nhạc không tồn tại trên Server!" });
+      return res.status(404).json({message: "File nhạc không tồn tại trên Server!"});
     }
 
     const stat = fs.statSync(filePath);
@@ -149,7 +149,7 @@ class SongStreamService {
       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
       const chunkSize = end - start + 1;
 
-      const fileStream = fs.createReadStream(filePath, { start, end });
+      const fileStream = fs.createReadStream(filePath, {start, end});
       const headers = {
         "Content-Range": `bytes ${start}-${end}/${fileSize}`,
         "Accept-Ranges": "bytes",

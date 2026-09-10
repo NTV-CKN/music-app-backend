@@ -12,13 +12,13 @@ class SonStreamgController {
       });
     } catch (error) {
       const statusCode = error.statusCode || 500;
-      return res.status(statusCode).json({ message: error.message });
+      return res.status(statusCode).json({message: error.message});
     }
   }
 
   async countSong(req, res) {
     try {
-      const { songId } = req.params;
+      const {songId} = req.params;
 
       await songService.countSong(songId);
 
