@@ -1,3 +1,15 @@
+/**
+ * Luồng gợi ý được tách thành hai lần gọi AI vì mỗi lần có một nhiệm vụ riêng.
+ * Lần đầu AI đọc yêu cầu của người dùng và trả về kết quả phân tích theo schema
+ * đầu vào, trong đó có thể loại, khoảng năng lượng và mức độ tin cậy. Các giá trị
+ * này được dùng làm tham số để truy vấn danh sách bài hát phù hợp trong Firestore.
+ *
+ * Sau khi có danh sách ứng viên, lần gọi AI thứ hai nhận yêu cầu ban đầu cùng dữ
+ * liệu vừa lấy được và chỉ chọn ra các songId phù hợp nhất. Schema của lần này
+ * khác lần đầu vì nó phục vụ việc tạo lời nhắn, tóm tắt yêu cầu và danh sách bài
+ * hát được đề xuất. Cách tách này giúp AI không tự bịa thông tin bài hát và đảm
+ * bảo kết quả cuối cùng chỉ đến từ dữ liệu đang có trong hệ thống.
+ */
 const admin = require("firebase-admin");
 const {GoogleGenAI, Type} = require("@google/genai");
 const {Genre} = require("../../genreSong");
@@ -81,9 +93,19 @@ class AIRecommendationService {
             return songsSnapshot.docs.map((songSnap) => {
                 const data = songSnap.data();
                 return {
-                    songId: data.id,
+                    songId: data.id || songSnap.id,
+                    id: data.id || songSnap.id,
                     title: data.title || "",
+                    album: data.album || "",
+                    artistId: Number(data.artistId) || 0,
                     artist: data.artist || "",
+                    source: data.source || "",
+                    image: data.image || "",
+                    duration: Number(data.duration) || 0,
+                    favorite: Boolean(data.favorite),
+                    counter: Number(data.counter) || 0,
+                    replay: Number(data.replay) || 0,
+                    isVip: Boolean(data.isVip),
                     genre: data.genre || "",
                     energy: data.energy ?? 0.5
                 };
@@ -204,9 +226,11 @@ class AIRecommendationService {
             const candidateMap = new Map(toolResult.map((song) => [song.songId, song]));
             const songIds = Array.isArray(parsedResult.recommendedSongIds) ?
                 parsedResult.recommendedSongIds : [];
-            const fullSongs = songIds.map((id) => candidateMap.get(id)).filter(Boolean);
+            const fullSongs = songIds
+                .map((id) => candidateMap.get(id))
+                .filter(Boolean)
+                .map(({songId, ...song}) => song);
 
-            //Trả về structured output
             return {
                 aiMessage: parsedResult.aiMessage || "Đây là những bài hát phù hợp với bạn.",
                 promptSummary: parsedResult.promptSummary || analysis.evidence,
